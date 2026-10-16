@@ -64,6 +64,11 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--asset);outline-offs
 @media (max-width:359px){.topbar{flex-direction:column-reverse;align-items:flex-start}.topbar .snd{align-self:flex-end}.brandrow .brand{font-size:28px;white-space:nowrap}}
 .pill{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:2px solid var(--line);border-radius:999px;padding:6px 12px;font-size:15px}
 .pill .fire{font-size:18px}
+/* Xアプリ内ブラウザで開いたときの案内 */
+.inapp{display:flex;align-items:flex-start;gap:8px;background:#FFF4E5;color:#7A4A00;border:2px solid #FFC98A;border-radius:14px;padding:10px 12px;margin-bottom:12px;font-size:13px;line-height:1.6}
+.inapp[hidden]{display:none}
+.inapp p{margin:0;flex:1}
+.inapp button{flex:none;border:0;background:transparent;color:#7A4A00;font-size:16px;padding:0 2px;cursor:pointer}
 .kicker{display:inline-block;background:var(--fire);color:#fff;font-family:"Mochiy Pop One","M PLUS Rounded 1c",sans-serif;font-size:13px;line-height:1.45;padding:7px 14px;border-radius:16px;box-shadow:0 3px 0 #C25500}
 .pill b{color:var(--fire);font-family:var(--display);font-weight:400;font-size:18px}
 .brand{font-family:"Mochiy Pop One","M PLUS Rounded 1c",sans-serif;font-size:34px;line-height:1.2;letter-spacing:.02em;margin:6px 0 6px}
@@ -196,6 +201,10 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--asset);outline-offs
 .miss:first-of-type{border-top:0}
 .tag{display:inline-block;color:#fff;border-radius:6px;padding:0 7px;font-size:12px;margin-left:6px;vertical-align:1px}
 .empty{color:var(--sub);font-size:14px;padding:6px 0 12px}
+/* 感想を送る（試作版） */
+.feedback{text-align:center;margin:0 0 16px}
+.feedback p{font-size:12px;color:var(--sub);margin:0 0 8px}
+.feedback a{text-decoration:none}
 .rbtns{display:grid;gap:12px;padding-top:12px}
 
 /* サウンド切り替え */
@@ -308,6 +317,10 @@ body.fever .bot.sm svg{animation:feverbot .4s ease-in-out infinite alternate}
 <div class="app">
 
   <section class="screen on" id="menu">
+    <div class="inapp" id="inapp" hidden>
+      <p>Xアプリの中で開いています。<br>メニュー（「…」や「⋮」）から<b>「ブラウザで開く」</b>を選ぶと、より快適に遊べます。</p>
+      <button id="inappClose" aria-label="閉じる">✕</button>
+    </div>
     <div class="topbar">
       <span class="kicker">知ってるだけじゃ勝てない。<br>瞬時の判断力を鍛えろ！</span>
       <button class="snd" id="sndMenu">🔊 サウンドON</button>
@@ -412,6 +425,10 @@ body.fever .bot.sm svg{animation:feverbot .4s ease-in-out infinite alternate}
       </div>
       <div class="toast" id="toast"></div>
       <div class="misses" id="misses"></div>
+      <div class="feedback">
+        <p>試作版です。遊んだ感想や「ここ直して」を教えてください</p>
+        <a class="btn-ghost" id="feedback" href="https://twitter.com/intent/tweet?text=%40chamomile5674%20%E7%B0%BF%E8%A8%98%E3%82%B2%E3%83%BC%E3%83%A0%E3%81%AE%E6%84%9F%E6%83%B3%EF%BC%9A" target="_blank" rel="noopener">感想をXで送る</a>
+      </div>
     </div>
     <div class="rbtns">
       <button class="chunky btn-main" id="again">もう一度</button>
@@ -1141,6 +1158,7 @@ $("quit").addEventListener("click",()=>{if(!ended&&total>0) track("quit-"+mode);
 $("copy").addEventListener("click",()=>{track("share-copy");copyResult()});
 $("saveImg").addEventListener("click",()=>{track("share-save");saveImage()});
 $("shareX").addEventListener("click",()=>track("share-x"));
+$("feedback").addEventListener("click",()=>track("feedback-x"));
 $("nick").value=store.get("nick","");
 $("nick").addEventListener("input",()=>store.set("nick",$("nick").value.trim().slice(0,12)));
 document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>{rankMode=b.dataset.rank;renderRank()}));
@@ -1162,6 +1180,9 @@ document.addEventListener("keydown",e=>{
   if(e.key==="ArrowRight")answer("cr");
 });
 refreshMenu();
+// Xアプリ内のブラウザ（主に Android。iPhone は Safari と見分けられないことが多い）で開いたら案内を出す。?inapp=1 で表示テスト
+if(/Twitter/i.test(navigator.userAgent)||/[?&]inapp=1/.test(location.search)){ $("inapp").hidden=false; track("open-inapp-x"); }
+$("inappClose").addEventListener("click",()=>{$("inapp").hidden=true});
 // 掛け声はトップ画面を開いた時点で読み込んでおく（初回の「よーい、スタート！」に間に合わせるため）
 if(soundOn){ audio(); loadVoices(); }
 </script>
