@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>簿記ミニゲーム</title>
-<meta name="description" content="経理・簿記の人なら60秒で何点取れる？勘定科目の仕分けと借方・貸方を判定するミニゲーム。日商簿記3級対策に。登録不要・スマホで遊べます。">
+<meta name="description" content="経理・簿記の人なら60秒で何点取れる？勘定科目を5要素に振り分ける「5要素ジャッジ」のミニゲーム。日商簿記3級対策に。登録不要・スマホで遊べます。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="簿記ミニゲーム｜60秒で何点取れる？">
-<meta property="og:description" content="勘定科目の仕分けと借方・貸方ジャッジ。コンボでフィーバー、称号は「伝説の会計士」まで。登録不要・スマホで遊べます。">
+<meta property="og:description" content="勘定科目を5要素に瞬時に仕分ける「5要素ジャッジ」。コンボでフィーバー、称号は「伝説の会計士」まで。登録不要・スマホで遊べます。">
 <meta property="og:url" content="https://sug0927-alt.github.io/boki-game/">
 <meta property="og:image" content="https://sug0927-alt.github.io/boki-game/og.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -61,7 +61,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--asset);outline-offs
 /* メニュー */
 .topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:18px}
 .topbar .snd{flex:none}
-@media (max-width:359px){.topbar{flex-direction:column-reverse;align-items:flex-start}.topbar .snd{align-self:flex-end}}
+@media (max-width:359px){.topbar{flex-direction:column-reverse;align-items:flex-start}.topbar .snd{align-self:flex-end}.brandrow .brand{font-size:28px;white-space:nowrap}}
 .pill{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:2px solid var(--line);border-radius:999px;padding:6px 12px;font-size:15px}
 .pill .fire{font-size:18px}
 .kicker{display:inline-block;background:var(--fire);color:#fff;font-family:"Mochiy Pop One","M PLUS Rounded 1c",sans-serif;font-size:13px;line-height:1.45;padding:7px 14px;border-radius:16px;box-shadow:0 3px 0 #C25500}
@@ -79,6 +79,10 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--asset);outline-offs
 .tile p{margin:0;font-size:13px;color:var(--sub);line-height:1.5}
 .tile .best{text-align:center;font-size:11px;color:var(--sub)}
 .tile .best b{display:block;font-family:var(--display);font-weight:400;font-size:22px;color:var(--ink)}
+/* 準備中のゲーム（押せない） */
+.tile.soon{opacity:.55;cursor:default;box-shadow:0 5px 0 var(--line)}
+.tile.soon:active{transform:none}
+.soonTag{flex:none;font-size:12px;color:#fff;background:var(--sub);padding:4px 10px;border-radius:999px}
 
 /* ゲーム */
 .hud{display:flex;align-items:center;gap:12px;margin-bottom:14px}
@@ -109,7 +113,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--asset);outline-offs
 .qcard.flyR{animation:flyR .22s ease-in}
 @keyframes flyL{50%{transform:translateX(-32px) rotate(-4deg)}}
 @keyframes flyR{50%{transform:translateX(32px) rotate(4deg)}}
-.burst{position:absolute;top:-14px;right:-6px;background:var(--fire);color:#fff;font-family:"Mochiy Pop One","M PLUS Rounded 1c",sans-serif;font-size:16px;padding:6px 12px;border-radius:999px;box-shadow:0 3px 0 #C25500;opacity:0;transform:scale(.6) rotate(8deg);pointer-events:none}
+.burst{position:absolute;top:10px;right:8px;background:var(--fire);color:#fff;font-family:"Mochiy Pop One","M PLUS Rounded 1c",sans-serif;font-size:16px;padding:6px 12px;border-radius:999px;box-shadow:0 3px 0 #C25500;opacity:0;transform:scale(.6) rotate(8deg);pointer-events:none}
 .burst.on{animation:burst .9s ease-out}
 @keyframes burst{15%{opacity:1;transform:scale(1.1) rotate(8deg)}30%{transform:scale(1) rotate(8deg)}80%{opacity:1}100%{opacity:0;transform:translateY(-12px) rotate(8deg)}}
 
@@ -169,6 +173,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--asset);outline-offs
 .rs{font-family:var(--display);font-size:22px;min-width:3.2ch}
 .rt{justify-self:start;font-family:"Mochiy Pop One","M PLUS Rounded 1c",sans-serif;font-size:12px;color:#fff;background:linear-gradient(90deg,#8B47D6,#1E7FE0);padding:3px 10px;border-radius:999px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .rd{font-size:11px;color:var(--sub);text-align:right;line-height:1.35}
+.credit{font-size:11px;color:var(--sub);text-align:center;margin:12px 0 0;line-height:1.7}
 .rempty{font-size:13px;color:var(--sub);padding:10px 2px 12px}
 .rtitle{display:block;width:max-content;max-width:100%;margin:12px auto 0;font-family:"Mochiy Pop One","M PLUS Rounded 1c",sans-serif;font-size:20px;color:#fff;background:linear-gradient(90deg,#8B47D6,#1E7FE0);padding:7px 20px;border-radius:999px;box-shadow:0 4px 0 #5A2E99}
 .rnext{text-align:center;font-size:13px;color:var(--sub);margin-top:10px;min-height:1.3em}
@@ -224,10 +229,65 @@ body.fever .plus{color:#E08A00}
 @keyframes flash{20%{opacity:1}100%{opacity:0}}
 .mega{position:fixed;inset:0;display:grid;place-items:center;pointer-events:none;z-index:20}
 .mega .txt{font-family:"Mochiy Pop One","M PLUS Rounded 1c","Hiragino Maru Gothic ProN",sans-serif;letter-spacing:.03em;font-size:clamp(40px,13vw,64px);line-height:1.15;text-align:center;color:var(--fire);-webkit-text-stroke:2px #fff;paint-order:stroke fill;text-shadow:0 5px 0 #C25500,0 0 28px rgba(255,122,26,.6);opacity:0;transform:rotate(-5deg)}
+.mega .txt.long{font-size:clamp(32px,10vw,48px)}
 .mega .txt small{display:block;font-size:.55em;color:#fff;-webkit-text-stroke:0;text-shadow:0 3px 0 #C25500}
 .mega.on .txt{animation:mega 1.15s cubic-bezier(.2,1.4,.4,1)}
 @keyframes mega{0%{opacity:0;transform:scale(.3) rotate(-12deg)}18%{opacity:1;transform:scale(1.18) rotate(-5deg)}32%{transform:scale(1) rotate(-5deg)}78%{opacity:1}100%{opacity:0;transform:translateY(-30px) rotate(-5deg)}}
 .conf{position:fixed;width:9px;height:14px;border-radius:2px;pointer-events:none;z-index:21}
+/* 開始前のカウントダウン */
+.count{position:fixed;inset:0;display:none;place-items:center;pointer-events:none;z-index:22}
+.count.on{display:grid}
+.count span{font-family:var(--display);font-size:clamp(96px,30vw,140px);line-height:1;color:var(--fire);-webkit-text-stroke:3px #fff;paint-order:stroke fill;text-shadow:0 6px 0 #C25500;opacity:0}
+.count span.go{font-family:"Mochiy Pop One","M PLUS Rounded 1c",sans-serif;font-size:clamp(48px,15vw,72px)}
+.count span.pop{animation:cpop .55s ease-out}
+@keyframes cpop{0%{opacity:0;transform:scale(1.8)}25%{opacity:1;transform:scale(1)}80%{opacity:1}100%{opacity:0;transform:scale(.92)}}
+
+/* マスコット「電卓ロボ」：顔は液晶に表示。data-face で表情、.talk で口パク、.hop で跳ねる */
+.brandrow{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.botwrap{display:flex;flex-direction:column;align-items:center;flex:none}
+.botname{margin-top:2px;font-family:"Mochiy Pop One","M PLUS Rounded 1c",sans-serif;font-size:11px;color:#fff;background:var(--ink);padding:2px 9px;border-radius:999px}
+.bot{display:inline-block;flex:none;width:70px;height:77px;line-height:0}
+.bot svg{width:100%;height:100%;overflow:visible}
+/* ゲーム中は問題カードの上の縁に乗せる（縦の場所をあまり取らない） */
+.bot.sm{position:absolute;z-index:2;left:28%;top:-66px;width:100px;height:110px;margin-left:-50px}
+#game .stats{margin-bottom:64px}
+/* ロボと重ならないようラベルは左下へ（問題文の位置は元のまま） */
+#game .qlabel{top:auto;bottom:10px}
+/* 掛け声はロボの右横に吹き出しのように出す */
+#game .burst{left:calc(28% + 54px);right:auto;top:-46px;max-width:calc(72% - 62px);width:max-content;white-space:normal;line-height:1.25;text-align:center}
+@media (max-width:400px){#game .burst,#game .burst.l1,#game .burst.l2,#game .burst.l3{font-size:14px;padding:5px 10px}}
+.bot.lg{display:block;width:92px;height:101px;margin:14px auto 0}
+.bot .f{display:none}
+.bot[data-face="normal"] .f-normal,.bot[data-face="happy"] .f-happy,.bot[data-face="excited"] .f-excited,.bot[data-face="sad"] .f-sad{display:inline}
+.bot .eyes{transform-box:fill-box;transform-origin:center;animation:blink 4.2s infinite}
+@keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+.bot .mouth{transform-box:fill-box;transform-origin:center top}
+.bot.talk .mouth{animation:talk .16s ease-in-out infinite alternate}
+@keyframes talk{from{transform:scaleY(1)}to{transform:scaleY(.35)}}
+.bot.hop svg{animation:hop .35s ease-out}
+@keyframes hop{40%{transform:translateY(-7px)}}
+.bot.shiver svg{animation:shiver .3s}
+@keyframes shiver{25%{transform:translateX(-3px) rotate(-4deg)}75%{transform:translateX(3px) rotate(4deg)}}
+body.fever .bot.sm svg{animation:feverbot .4s ease-in-out infinite alternate}
+@keyframes feverbot{from{transform:translateY(0) rotate(-4deg)}to{transform:translateY(-4px) rotate(4deg)}}
+
+/* 手応え：コンボの掛け声は段階ごとに色と大きさが強くなる */
+.burst.l1{background:#FF5E3A;box-shadow:0 3px 0 #B8331A;font-size:17px}
+.burst.l2{background:linear-gradient(90deg,#8B47D6,#FF5E7E);box-shadow:0 3px 0 #5A2E99;font-size:18px}
+.burst.l3{background:linear-gradient(90deg,#FF5E7E,#FFB020,#22C55E,#1E7FE0,#8B47D6);box-shadow:0 3px 0 #5A2E99;font-size:19px}
+/* 押した瞬間につぶれて戻るボタン */
+.ans.squish{animation:squish .22s ease-out}
+@keyframes squish{0%{transform:translateY(3px) scale(1.06,.9)}55%{transform:translateY(0) scale(.97,1.04)}100%{transform:none}}
+/* 答えが飛び込んだときに弾むボタン */
+.ans.boing{animation:boing .34s cubic-bezier(.3,1.6,.5,1)}
+@keyframes boing{0%{transform:scale(1)}35%{transform:scale(1.09,.93)}70%{transform:scale(.98,1.03)}100%{transform:none}}
+/* カードからボタンへ飛ぶ答え・弾ける粒 */
+.fly{position:fixed;z-index:15;pointer-events:none;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:14px;padding:6px 12px;font-size:18px;font-weight:800;white-space:nowrap;box-shadow:0 4px 0 var(--line)}
+.bit{position:fixed;z-index:16;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;border-radius:50%;pointer-events:none}
+/* コンボが切れたときの余韻 */
+.cend{position:absolute;right:2px;top:40px;font-size:13px;color:var(--sub);white-space:nowrap;opacity:0;pointer-events:none}
+.cend.on{animation:cend 1.3s ease-out}
+@keyframes cend{0%{opacity:0;transform:scale(1.25)}15%{opacity:1;transform:none}70%{opacity:1}100%{opacity:0;transform:translateY(12px)}}
 @keyframes fadeOnly{20%{opacity:1}80%{opacity:1}100%{opacity:0}}
 
 @media (prefers-reduced-motion: reduce){
@@ -235,6 +295,9 @@ body.fever .plus{color:#E08A00}
   body.fever .feverTag,body.fever .tbar i{animation:none}
   .qcard.glow::after,.flash.on{animation:none}
   .qcard.shake,.qcard.flyL,.qcard.flyR,.burst.on{animation:none}
+  .ans.squish,.ans.boing,.bot .eyes,.bot.talk .mouth,.bot.hop svg,.bot.shiver svg,body.fever .bot.sm svg{animation:none}
+  .cend.on{animation:fadeOnly 1.3s}
+  .count span.pop{animation:fadeOnly .55s;transform:none}
   .sheet,.tbar i,.combo{transition:none}
 }
 </style>
@@ -249,11 +312,11 @@ body.fever .plus{color:#E08A00}
       <span class="kicker">知ってるだけじゃ勝てない。<br>瞬時の判断力を鍛えろ！</span>
       <button class="snd" id="sndMenu">🔊 サウンドON</button>
     </div>
-    <h1 class="brand">簿記ミニゲーム</h1>
+    <div class="brandrow"><h1 class="brand">簿記ミニゲーム</h1><span class="botwrap"><span class="bot" id="botTop" data-face="normal"></span><span class="botname">かっしー</span></span></div>
     <p class="lead">1回60秒。試験では正確さに加えて、解くスピードも重要です。このゲームでその両方を鍛えられます。</p>
     <button class="tile" data-mode="sort">
-      <span class="ico sort">科</span>
-      <span class="txt"><span class="lv">ステップ1</span><h2>科目仕分け</h2><p>勘定科目を5つのグループに振り分ける</p></span>
+      <span class="ico sort">5</span>
+      <span class="txt"><span class="lv">ステップ1</span><h2>5要素ジャッジ</h2><p>勘定科目を5つの要素に振り分ける</p></span>
       <span class="best">ベスト<b id="best-sort">0</b></span>
     </button>
     <button class="tile" data-mode="lr">
@@ -269,11 +332,12 @@ body.fever .plus{color:#E08A00}
     <div class="rank">
       <h2>過去のスコアランキング</h2>
       <div class="tabs" role="tablist">
-        <button role="tab" data-rank="sort" aria-selected="true">科目仕分け</button>
+        <button role="tab" data-rank="sort" aria-selected="true">5要素ジャッジ</button>
         <button role="tab" data-rank="lr" aria-selected="false">左右ジャッジ</button>
       </div>
       <div id="rankList"></div>
     </div>
+    <p class="credit">音が出ないときは、マナーモード（消音）を解除してください<br>音声：VOICEVOX:Voidoll(CV:丹下桜)</p>
   </section>
 
   <section class="screen" id="game">
@@ -288,8 +352,10 @@ body.fever .plus{color:#E08A00}
       <div class="score" id="score">0<small>点</small></div>
       <span class="plus" id="plus"></span>
       <div class="combo" id="comboBox">🔥<b id="combo">0</b>コンボ</div>
+      <span class="cend" id="cend"></span>
     </div>
     <div class="qcard" id="qcard">
+      <span class="bot sm" id="botGame" data-face="normal"></span>
       <span class="qlabel" id="qlabel">勘定科目</span>
       <div class="qtext" id="qtext" aria-live="polite"></div>
       <div class="burst" id="burst"></div>
@@ -318,6 +384,7 @@ body.fever .plus{color:#E08A00}
 
   <section class="screen" id="result">
     <div class="result-scroll">
+      <span class="bot lg" id="botRes" data-face="happy"></span>
       <div class="rhead" id="rname"></div>
       <div class="rscore" id="rscore">0</div>
       <div class="rtitle" id="rtitle"></div>
@@ -356,6 +423,7 @@ body.fever .plus{color:#E08A00}
 
 <div class="flash" id="flash"></div>
 <div class="mega" id="mega"><div class="txt" id="megaTxt"></div></div>
+<div class="count" id="count"><span id="countTxt"></span></div>
 <div class="sheet" id="sheet" aria-live="assertive">
   <div class="in"><div class="mark" id="smark"></div><div><h3 id="stitle"></h3><p id="sbody"></p></div></div>
 </div>
@@ -448,6 +516,8 @@ const SIDE = {dr:"借方",cr:"貸方"};
 const SCORE_ENDPOINT = "https://script.google.com/macros/s/AKfycbzoQwYt-XehSVYMJDGutvTQYaXrCroppcH9hYjWQmko9m21NWFZYtlou1XsdbxS8cES/exec";
 // SHARE_URL: 公開したゲームのURL（空なら今開いているページのURLを使います）
 const SHARE_URL = location.origin + location.pathname;
+// PC内で動かしているか（localhost やファイルを直接開いた場合）
+const IS_LOCAL = location.protocol === "file:" || ["localhost","127.0.0.1","[::1]"].includes(location.hostname);
 // =========================================
 
 function buildLR(){
@@ -469,7 +539,7 @@ function buildLR(){
 }
 
 const MODES = {
-  sort:{title:"科目仕分け",label:"勘定科目",board:"board-sort",hint:"",
+  sort:{title:"5要素ジャッジ",label:"勘定科目",board:"board-sort",hint:"",
     items:()=>ACCOUNTS.map(([n,c,h])=>({key:n,main:n,sub:"",q:n,plain:n,ans:c,ex:h})),
     okText:it=>it.plain+"は"+CAT[it.ans]+"です。",
     name:a=>CAT[a]},
@@ -504,7 +574,7 @@ function dayStr(o=0){const d=new Date();d.setDate(d.getDate()+o);return d.getFul
 function refreshMenu(){
   renderRank();
   $("best-sort").textContent=store.get("best_sort",0);
-  $("best-lr").textContent=store.get("best_lr",0);
+  if($("best-lr")) $("best-lr").textContent=store.get("best_lr",0);
   const s=store.get("streak",{last:null,count:0});
   if($("streak")) $("streak").textContent=(s.last===dayStr()||s.last===dayStr(-1))?s.count:0;
 }
@@ -529,23 +599,41 @@ function next(){
   if(ended) return;
   if(deck.length===0) deck=shuffle(pool.slice());
   cur=deck.pop();
-  $("qtext").innerHTML=cur.q;
+  $("qtext").innerHTML=cur.q; $("qtext").style.visibility="";
   $("qcard").classList.remove("flyL","flyR","shake");
   hideSheet();
   locked=false;
 }
 
+// 3・2・1・スタート！の間隔(ms)
+const CD_STEP=550;
+let cdTimers=[];
+function clearCountdown(){ cdTimers.forEach(clearTimeout); cdTimers=[]; $("count").classList.remove("on"); }
 function start(m){
   mode=m;M=MODES[m];pool=M.items();
   score=0;combo=0;maxCombo=0;correct=0;total=0;misses=[];marks=[];ended=false;
-  endFever();feverCount=0;snap=null;audio();
+  endFever();feverCount=0;snap=null;hush();audio();loadVoices();
   deck=shuffle(pool.slice());
   $("qlabel").textContent=M.label; $("hint").textContent=M.hint;
   document.querySelectorAll(".board").forEach(b=>b.classList.toggle("on",b.id===M.board));
   updateStats(); hideSheet();
-  show("game"); next();
-  endAt=Date.now()+DURATION*1000;
-  clearInterval(timer); timer=setInterval(tick,100); tick();
+  // カウントダウン中は問題を出さず、時間も止めておく
+  clearCountdown(); clearInterval(timer); locked=true; cur=null; $("qtext").innerHTML="";
+  $("sec").textContent=DURATION; $("tfill").style.transform="scaleX(1)"; $("tbar").classList.remove("low");
+  botFace("normal");
+  show("game"); track("start-"+m);
+  $("count").classList.add("on");
+  ["3","2","1","スタート！"].forEach((t,i)=>cdTimers.push(setTimeout(()=>{
+    const c=$("countTxt"); c.textContent=t; c.className=i===3?"go":""; restart(c,"pop");
+    if(i<3) SFX.tick(); else { botFace("happy",600); botHop(); }
+  },i*CD_STEP)));
+  // 「よーい、スタート！」の「スタート」が画面の「スタート！」に重なるように鳴らす
+  const vd=voiceBuf.start?voiceBuf.start.duration*1000:1300;
+  cdTimers.push(setTimeout(()=>say("start"),Math.max(0,3*CD_STEP-(vd-600))));
+  cdTimers.push(setTimeout(()=>{
+    $("count").classList.remove("on"); next();
+    endAt=Date.now()+DURATION*1000; timer=setInterval(tick,100); tick();
+  },3*CD_STEP+300));
 }
 function tick(){
   const left=Math.max(0,(endAt-Date.now())/1000);
@@ -565,19 +653,25 @@ function answer(c){
   if(locked||!cur||ended) return;
   total++;
   const card=$("qcard");
+  const btn=document.querySelector("#"+M.board+' .ans[data-c="'+c+'"]');
+  if(btn){ btn.classList.remove("boing"); restart(btn,"squish"); }
   if(c===cur.ans){
     combo++;correct++;maxCombo=Math.max(maxCombo,combo);marks.push(1);
     const gain=(10+Math.min(combo-1,10)*2)*(fever?2:1); score+=gain;
     SFX.ok(combo);
-    if(mode==="lr") restart(card,c==="dr"?"flyL":"flyR");
+    if(!flyTo(btn,combo) && mode==="lr") restart(card,c==="dr"?"flyL":"flyR");
     restart($("comboBox"),"pop"); setTimeout(()=>$("comboBox").classList.remove("pop"),150);
     comboFx(combo);
+    botFace(combo>=5||fever?"excited":"happy",combo>=5||fever?700:500); botHop();
     if(combo===maxCombo) snap={main:cur.main||cur.plain,sub:cur.sub||"",combo,score,fever};
     restart(card,"ok");
     $("plus").textContent="+"+gain; restart($("plus"),"on");
     locked=true; setTimeout(next,260);
   }else{
+    if(combo>=3){ $("cend").textContent=combo+"コンボでストップ"; restart($("cend"),"on"); }
+    say(combo>=5?"miss2":["miss1","miss2","miss3"][Math.floor(Math.random()*3)]);
     combo=0;marks.push(0);endFever();SFX.ng();
+    botFace("sad",1500); botHop("shiver");
     if(!misses.find(m=>m.key===cur.key)) misses.push(cur);
     restart(card,"shake");
     if(navigator.vibrate) try{navigator.vibrate(60)}catch(e){}
@@ -590,7 +684,7 @@ function answer(c){
 // サウンド（音声ファイルなしでブラウザ内で生成）
 function audio(){
   if(!soundOn) return null;
-  try{ if(!actx) actx=new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==="suspended") actx.resume(); }catch(e){return null}
+  try{ if(!actx) actx=new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==="suspended"){ const r=actx.resume(); if(r&&r.catch) r.catch(()=>{}); } }catch(e){return null}
   return actx;
 }
 function tone(freq,dur,type,vol,delay,glide){
@@ -609,15 +703,93 @@ const STEPS=[0,2,4,7,9,12];
 const SFX={
   ok(n){ const f=329.63*Math.pow(2,STEPS[Math.min(Math.floor((n-1)/2),STEPS.length-1)]/12); tone(f,.2,"sine",.11); tone(f*1.189,.38,"sine",.13,.075); tone(f*1.189/2,.32,"sine",.045,.075); },
   ng(){ tone(175,.42,"sine",.11,0,130); },
+  tick(){ tone(392,.18,"sine",.08); },
+  // 答えがボタンに飛び込んだときの「ぽよん」。低めで小さく、コンボで少しだけ上がる
+  pop(n){ const f=196*Math.pow(2,Math.min(n,12)/24); tone(f,.16,"sine",.05,0,f*1.5); },
   big(){ [261.63,329.63,392,523.25].forEach((f,i)=>tone(f,.45,"sine",.13,i*.08)); },
   fever(){ tone(261.63,.5,"sine",.07,0,523.25); [392,493.88,587.33,783.99].forEach((f,i)=>tone(f,.5,"sine",.12,.15+i*.09)); },
   end(){ [392,329.63,523.25].forEach((f,i)=>tone(f,.4,"sine",.12,i*.15)); }
 };
+// 掛け声（VOICEVOX:Voidoll で作った音声ファイル。段階ごとの抑揚は生成時に付けてある）
+const WORDS={start:"よーい、スタート！",miss1:"ドンマイ！",miss2:"おしい！",miss3:"次いこう！",shimekiri:"締め切り！",otsukare:"おつかれさま！",saikoueki:"過去最高益！",
+  iine:"いいね！",sonochoshi:"その調子！",umai:"うまい！",iinagare:"いい流れ！",kiteru:"きてるね！",saeteru:"冴えてる！",ato1:"あと1つでフィーバー！",
+  sugoi:"すごい！",subarashii:"すばらしい！",kireteru:"キレてる！",madamada:"まだまだ！",tomaranai:"止まらない！",attoteki:"圧倒的！",tensai:"天才！",ato1b:"あと1つでフィーバー！",
+  muteki:"無敵！",kanpeki:"完璧！",densetsu:"伝説級！",saikyo:"最強！",tatsujinnoiki:"達人の域！",susamajii:"すさまじい！",ijigen:"異次元！",ato1c:"あと1つでフィーバー！",
+  // 節目だけ簿記のセリフ（テンポを崩さないよう短い言葉）。31コンボ以降は好きな勘定科目「減価償却」を言い続ける
+  sagaku:"差額ゼロ！",taishaku:"貸借一致！",kakutei:"決算確定！",kurojifever:"黒字フィーバー！",kessanfever:"決算フィーバー！",genka:"減価償却！"};
+const voiceBuf={}; let voiceSrc=null, voicePromise=null, voiceTimer=null;
+// ファイルはページ表示時に取得しておき、ゲーム開始時（ユーザー操作後）に音として使える形にする
+const voiceRaw={};
+Object.keys(WORDS).forEach(k=>{voiceRaw[k]=fetch("voice/"+k+".wav").then(r=>r.ok?r.arrayBuffer():null).catch(()=>null)});
+function loadVoices(){
+  const a=audio(); if(!a) return Promise.resolve();
+  if(!voicePromise) voicePromise=Promise.all(Object.keys(WORDS).map(k=>voiceRaw[k].then(b=>b&&new Promise((ok,ng)=>a.decodeAudioData(b,ok,ng))).then(buf=>{if(buf)voiceBuf[k]=buf}).catch(()=>{})));
+  return voicePromise;
+}
+function say(key){
+  const a=audio(), buf=voiceBuf[key]; if(!a||!buf) return;
+  try{
+    hush();
+    const s=a.createBufferSource(), g=a.createGain(); g.gain.value=.9;
+    s.buffer=buf; s.connect(g); g.connect(a.destination); s.start(); voiceSrc=s;
+    botTalk(buf.duration);
+  }catch(e){}
+}
+// ===== マスコット（電卓ロボ）=====
+// 体は電卓、キーは5要素の色（資産・負債・純資産 / 収益・費用・＝）
+const BOT_FACES={
+  normal:'<g class="eyes"><circle cx="38" cy="32" r="3.4" fill="#2C4A2A" stroke="none"/><circle cx="62" cy="32" r="3.4" fill="#2C4A2A" stroke="none"/></g><path class="mouth" d="M44 41 Q50 46 56 41"/>',
+  happy:'<g class="eyes"><path d="M33 34 L38 29 L43 34"/><path d="M57 34 L62 29 L67 34"/></g><path class="mouth" d="M43 40 Q50 49 57 40 Z" fill="#2C4A2A"/><ellipse cx="29" cy="41" rx="4" ry="2.4" fill="#F7A3B5" stroke="none"/><ellipse cx="71" cy="41" rx="4" ry="2.4" fill="#F7A3B5" stroke="none"/>',
+  excited:'<g class="eyes"><path d="M34 28 L41 32 L34 36"/><path d="M66 28 L59 32 L66 36"/></g><path class="mouth" d="M41 39 H59 Q59 49 50 49 Q41 49 41 39 Z" fill="#2C4A2A"/><ellipse cx="29" cy="42" rx="4" ry="2.4" fill="#F7A3B5" stroke="none"/><ellipse cx="71" cy="42" rx="4" ry="2.4" fill="#F7A3B5" stroke="none"/>',
+  sad:'<g class="eyes"><path d="M33 34 L41 30.5"/><path d="M67 34 L59 30.5"/></g><path class="mouth" d="M44 46 Q50 41 56 46"/><path d="M68 37 Q65.5 41.5 68 43.5 Q70.5 41.5 68 37 Z" fill="#5AA9E6" stroke="none"/>'
+};
+// face なし＝画面用（全表情を入れて CSS で切り替え）、face あり＝画像用（その表情だけ）
+function botSVG(face){
+  const key=(x,y,c,d)=>'<rect x="'+x+'" y="'+(y+2)+'" width="16" height="11" rx="3" fill="'+d+'"/><rect x="'+x+'" y="'+y+'" width="16" height="11" rx="3" fill="'+c+'"/>';
+  const faces=face?BOT_FACES[face]:Object.keys(BOT_FACES).map(k=>'<g class="f f-'+k+'">'+BOT_FACES[k]+'</g>').join('');
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 110" width="100" height="110" aria-hidden="true">'
+   +'<line x1="50" y1="9" x2="50" y2="2" stroke="#4A5580" stroke-width="3" stroke-linecap="round"/><circle cx="50" cy="3" r="4" fill="#FF7A1A"/>'
+   +'<rect x="3" y="52" width="10" height="22" rx="5" fill="#3B4672"/><rect x="87" y="52" width="10" height="22" rx="5" fill="#3B4672"/>'
+   +'<rect x="26" y="98" width="16" height="10" rx="4" fill="#3B4672"/><rect x="58" y="98" width="16" height="10" rx="4" fill="#3B4672"/>'
+   +'<rect x="11" y="12" width="78" height="92" rx="16" fill="#1D2340"/><rect x="11" y="8" width="78" height="92" rx="16" fill="#2F3A66"/>'
+   +'<rect x="19" y="16" width="62" height="38" rx="8" fill="#1D2340"/><rect x="21" y="18" width="58" height="34" rx="6" fill="#CDEBC0"/>'
+   +'<g fill="none" stroke="#2C4A2A" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">'
+   +faces
+   +'</g>'
+   +key(20,62,"#1E7FE0","#1561AD")+key(42,62,"#8B47D6","#6A30A8")+key(64,62,"#22A45A","#187A42")
+   +key(20,80,"#F2A20C","#BF7E00")+key(42,80,"#EE4D5F","#BA3243")+key(64,80,"#FF7A1A","#C25500")
+   +'<text x="72" y="88.5" text-anchor="middle" font-size="10" font-weight="900" fill="#fff" font-family="sans-serif">=</text>'
+   +'</svg>';
+}
+document.querySelectorAll(".bot").forEach(b=>b.innerHTML=botSVG());
+// 画像（シェア画像など）に描くためのかっしー
+function botImage(face){
+  return new Promise(ok=>{const im=new Image();im.onload=()=>ok(im);im.onerror=()=>ok(null);
+    im.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(botSVG(face));});
+}
+let botTimer=null;
+// 一時的に表情を変えて、ms 後に「いつもの顔」（フィーバー中は大はしゃぎ）に戻す
+function botFace(face,ms,el){
+  const b=el||$("botGame"); if(!b) return;
+  b.dataset.face=face; clearTimeout(botTimer);
+  if(ms) botTimer=setTimeout(()=>{ b.dataset.face=fever?"excited":"normal"; },ms);
+}
+function botHop(cls){ const b=$("botGame"); if(!b) return; b.classList.remove("hop","shiver"); restart(b,cls||"hop"); }
+let talkTimer=null;
+function botTalk(sec){
+  const b=document.querySelector(".screen.on .bot"); if(!b) return;
+  document.querySelectorAll(".bot.talk").forEach(x=>x.classList.remove("talk"));
+  b.classList.add("talk"); clearTimeout(talkTimer);
+  talkTimer=setTimeout(()=>b.classList.remove("talk"),sec*1000);
+}
+
+function hush(){ clearTimeout(voiceTimer); try{ if(voiceSrc) voiceSrc.stop(); }catch(e){} voiceSrc=null; }
+
 function setSound(on,init){
-  soundOn=on; store.set("sound",on);
+  soundOn=on; store.set("sound",on); if(!on) hush();
   $("sndMenu").textContent= on?"🔊 サウンドON":"🔇 サウンドOFF";
   $("sndGame").textContent= on?"🔊":"🔇";
-  if(on&&!init) audio();
+  if(on&&!init){ audio(); loadVoices(); }
 }
 
 // フィーバー：10コンボごとに5秒間 得点2倍＋残り時間3秒追加（ミスで終了）
@@ -626,23 +798,70 @@ function startFever(){
   document.body.classList.add("fever");
   restart($("addt"),"on");
   SFX.fever();
+  botFace("excited");
 }
-function endFever(){ fever=false; document.body.classList.remove("fever"); }
+function endFever(){ fever=false; document.body.classList.remove("fever"); if($("botGame")&&$("botGame").dataset.face==="excited") $("botGame").dataset.face="normal"; }
 
-// 5コンボ以上は毎回小さな演出、5の倍数で豪華な演出
-const TIERS=["ナイス！","すごい！","神がかり！","止まらない！","簿記の達人！"];
+// 2コンボ以上は毎回掛け声（段階で強くなる）、5コンボ以上はカードも光る、5の倍数で豪華な演出
+const COMBO_CALLS={2:"iine",3:"sonochoshi",4:"umai",5:"sagaku",6:"iinagare",7:"kiteru",8:"saeteru",9:"ato1",
+  11:"sugoi",12:"subarashii",13:"kireteru",14:"madamada",15:"taishaku",16:"tomaranai",17:"attoteki",18:"tensai",19:"ato1b",
+  21:"muteki",22:"kanpeki",23:"densetsu",24:"saikyo",25:"kakutei",26:"tatsujinnoiki",27:"susamajii",28:"ijigen",29:"ato1c"};
+// フィーバーは 黒字（10,30,50…）と 決算（20,40…）を交互に。31コンボ以降はフィーバー以外ずっと「減価償却！」
+function callFor(n){
+  if(n%10===0) return (n/10)%2?"kurojifever":"kessanfever";
+  return COMBO_CALLS[n]||"genka";
+}
 function comboFx(n){
-  if(n<5) return;
-  restart($("qcard"),"glow");
-  if(n%5===0){
-    const word=TIERS[Math.min(n/5-1,TIERS.length-1)];
-    if(n%10===0){ startFever(); $("megaTxt").innerHTML="フィーバー！<small>"+n+"コンボ 得点2倍＋3秒</small>"; }
+  if(n<2) return;
+  const key=callFor(n), word=WORDS[key];
+  say(key);
+  if(n>=5) restart($("qcard"),"glow");
+  if(n>=5&&n%5===0){
+    if(n%10===0){ startFever(); $("megaTxt").innerHTML=word+"<small>"+n+"コンボ 得点2倍＋3秒</small>"; }
     else { SFX.big(); $("megaTxt").innerHTML=n+"コンボ<small>"+word+"</small>"; }
+    $("megaTxt").classList.toggle("long",word.length>=7);
     restart($("mega"),"on"); restart($("flash"),"on");
     confetti(n>=15?70:45);
     if(navigator.vibrate) try{navigator.vibrate([30,40,30])}catch(e){}
   }else{
-    $("burst").textContent=n+"コンボ"; restart($("burst"),"on");
+    // コンボ数は右上に出ているので、吹き出しは言葉だけ
+    const b=$("burst"); b.innerHTML=word.replace("あと1つで","あと1つで<br>");
+    b.classList.remove("l1","l2","l3"); if(n>=5) b.classList.add(n<10?"l1":n<20?"l2":"l3");
+    restart(b,"on");
+  }
+}
+
+// 正解した答えがカードからボタンへ飛び込み、ボタンが弾んで粒が散る。演出しなかったときは false
+function flyTo(btn,n){
+  if(reduceMotion||!btn||!document.body.animate) return false;
+  const q=$("qtext"), from=q.getBoundingClientRect(), to=btn.getBoundingClientRect();
+  const word=(cur.main||cur.plain||q.textContent||"").trim();
+  const f=document.createElement("div"); f.className="fly";
+  f.textContent=word.length>10?word.slice(0,10)+"…":word;
+  f.style.left=(from.left+from.width/2)+"px"; f.style.top=(from.top+from.height/2)+"px";
+  document.body.appendChild(f); q.style.visibility="hidden";
+  const dx=to.left+to.width/2-(from.left+from.width/2), dy=to.top+to.height/2-(from.top+from.height/2);
+  f.animate([
+    {transform:"translate(-50%,-50%) scale(1)"},
+    {transform:"translate(-50%,-50%) translate("+dx*.35+"px,"+(dy*.35-24)+"px) scale(.95)",offset:.4},
+    {transform:"translate(-50%,-50%) translate("+dx+"px,"+dy+"px) scale(.45)",opacity:.6}
+  ],{duration:240,easing:"ease-in"}).onfinish=()=>{
+    f.remove(); btn.classList.remove("squish"); restart(btn,"boing"); SFX.pop(n);
+    popBits(to.left+to.width/2,to.top+to.height/2,getComputedStyle(btn).backgroundColor,6+Math.min(n,10));
+  };
+  return true;
+}
+function popBits(x,y,color,count){
+  for(let i=0;i<count;i++){
+    const s=document.createElement("span"); s.className="bit";
+    s.style.left=x+"px"; s.style.top=y+"px"; s.style.background=i%3?color:"#fff";
+    s.style.boxShadow="0 0 0 2px "+color;
+    document.body.appendChild(s);
+    const a=Math.PI*2*i/count+Math.random()*.4, d=34+Math.random()*30;
+    s.animate([
+      {transform:"translate(0,0) scale(1)",opacity:1},
+      {transform:"translate("+Math.cos(a)*d+"px,"+Math.sin(a)*d+"px) scale(.2)",opacity:0}
+    ],{duration:380+Math.random()*120,easing:"cubic-bezier(.2,.8,.4,1)"}).onfinish=()=>s.remove();
   }
 }
 function confetti(count){
@@ -664,7 +883,8 @@ function confetti(count){
 }
 
 // ===== 称号 =====
-const TITLES=[[0,"簿記見習い"],[150,"帳簿係"],[300,"仕訳職人"],[450,"経理のエース"],[600,"経理部長"],[800,"簿記マスター"],[1000,"伝説の会計士"]];
+// 称号（天井は3000点）
+const TITLES=[[0,"簿記見習い"],[150,"帳簿係"],[300,"仕訳職人"],[450,"経理のエース"],[600,"経理部長"],[800,"簿記マスター"],[1000,"決算の鬼"],[1500,"財務部長"],[2000,"CFO"],[2500,"会計の神"],[3000,"伝説の会計士"]];
 function titleFor(sc){let t=TITLES[0];for(const x of TITLES) if(sc>=x[0]) t=x;return t}
 function nextTitle(sc){return TITLES.find(x=>x[0]>sc)}
 
@@ -672,7 +892,7 @@ function nextTitle(sc){return TITLES.find(x=>x[0]>sc)}
 const F={d:'"Dela Gothic One","M PLUS Rounded 1c",sans-serif',r:'"M PLUS Rounded 1c","Hiragino Maru Gothic ProN",sans-serif',p:'"Mochiy Pop One","M PLUS Rounded 1c",sans-serif'};
 function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
 function fit(ctx,text,weight,fam,size,maxW){let s=size;do{ctx.font=weight+" "+s+"px "+fam;if(ctx.measureText(text).width<=maxW)break;s-=1}while(s>8);return s}
-function momentWord(s){if(s.fever)return "フィーバー中！";if(s.combo<5)return "いい調子！";return TIERS[Math.min(Math.floor(s.combo/5)-1,TIERS.length-1)]}
+function momentWord(s){if(s.fever)return "フィーバー中！";if(s.combo<2)return "いい調子！";return WORDS[callFor(s.combo)]}
 async function loadImgFonts(text){
   if(!document.fonts||!document.fonts.load) return;
   const t=text+"0123456789点%回";
@@ -682,7 +902,7 @@ async function loadImgFonts(text){
     document.fonts.load('400 40px "Mochiy Pop One"',t)]),new Promise(r=>setTimeout(r,2500))])}catch(e){}
 }
 
-function drawMoment(ctx,x,y,w,h,s,mk){
+function drawMoment(ctx,x,y,w,h,s,mk,bot){
   const k=w/360;
   ctx.save();
   ctx.textBaseline="middle";
@@ -707,17 +927,18 @@ function drawMoment(ctx,x,y,w,h,s,mk){
   const ct=(s?s.combo:0)+"コンボ";ctx.font="400 "+(15*k)+"px "+F.p;const cw=ctx.measureText(ct).width+24*k;
   rr(ctx,ix+iw-P-cw,cy,cw,28*k,14*k);ctx.fillStyle="#FF7A1A";ctx.fill();
   ctx.fillStyle="#fff";ctx.textAlign="center";ctx.fillText(ct,ix+iw-P-cw/2,cy+14*k);
-  cy+=46*k;
-  const qh=150*k,fv=s&&s.fever;
+  cy+=88*k;
+  const qh=150*k,fv=s&&s.fever,cardTop=cy;
   rr(ctx,ix+P,cy+6*k,iw-2*P,qh,18*k);ctx.fillStyle=fv?"#E08A00":"#DFE3EE";ctx.fill();
   rr(ctx,ix+P,cy,iw-2*P,qh,18*k);ctx.fillStyle="#fff";ctx.fill();ctx.lineWidth=2.5*k;ctx.strokeStyle=fv?"#FFB020":"#DFE3EE";ctx.stroke();
   const main=s?s.main:"コンボなし";
   ctx.fillStyle="#1D2340";fit(ctx,main,"800",F.r,32*k,iw-2*P-28*k);
-  ctx.fillText(main,ix+iw/2,cy+(s&&s.sub?58*k:qh/2));
-  if(s&&s.sub){ctx.fillStyle="#6B7290";fit(ctx,s.sub,"800",F.r,17*k,iw-2*P-28*k);ctx.fillText(s.sub,ix+iw/2,cy+96*k)}
+  ctx.fillText(main,ix+iw/2,cy+(s&&s.sub?66*k:qh/2+8*k));
+  if(s&&s.sub){ctx.fillStyle="#6B7290";fit(ctx,s.sub,"800",F.r,17*k,iw-2*P-28*k);ctx.fillText(s.sub,ix+iw/2,cy+102*k)}
   if(fv){const ft="フィーバー 得点×2";ctx.font="400 "+(12*k)+"px "+F.p;const fw=ctx.measureText(ft).width+22*k;
     const g=ctx.createLinearGradient(ix+iw/2-fw/2,0,ix+iw/2+fw/2,0);g.addColorStop(0,"#FF5E7E");g.addColorStop(1,"#FFB020");
     rr(ctx,ix+iw/2-fw/2,cy+qh-32*k,fw,22*k,11*k);ctx.fillStyle=g;ctx.fill();ctx.fillStyle="#fff";ctx.fillText(ft,ix+iw/2,cy+qh-21*k)}
+  if(bot) ctx.drawImage(bot,ix+P+(iw-2*P)*.28-45*k,cardTop-60*k,90*k,99*k);
   cy+=qh+26*k;
   const bw=(iw-2*P-12*k)/2,lh=iy+ih-cy-22*k;
   const btn=(bx,by,w2,h2,col,sh,label)=>{rr(ctx,bx,by+5*k,w2,h2,14*k);ctx.fillStyle=sh;ctx.fill();rr(ctx,bx,by,w2,h2,14*k);ctx.fillStyle=col;ctx.fill();ctx.fillStyle="#fff";fit(ctx,label,"800",F.r,(mk==="lr"?26:18)*k,w2-8*k);ctx.fillText(label,bx+w2/2,by+h2/2)};
@@ -737,7 +958,7 @@ function drawMoment(ctx,x,y,w,h,s,mk){
   ctx.restore();ctx.restore();
 }
 
-function drawShare(){
+function drawShare(bot,botM){
   const c=document.createElement("canvas");c.width=1200;c.height=675;const ctx=c.getContext("2d");
   ctx.fillStyle="#F3F5FA";ctx.fillRect(0,0,1200,675);
   const band=ctx.createLinearGradient(0,0,1200,0);band.addColorStop(0,"#1E7FE0");band.addColorStop(1,"#8B47D6");
@@ -760,26 +981,44 @@ function drawShare(){
   ctx.textAlign="left";ctx.textBaseline="alphabetic";ctx.fillStyle="#1D2340";ctx.font="800 26px "+F.r;
   ctx.fillText("経理・簿記の人なら60秒で何点取れる？",64,622);
   ctx.textAlign="center";ctx.fillStyle="#6B7290";ctx.font="800 20px "+F.r;ctx.fillText("最高コンボの瞬間",960,56);
-  drawMoment(ctx,800,72,320,586,snap,mode);
+  if(bot){
+    // 吹き出し（右端は「最高コンボの瞬間」に重ならないよう 790 まで）
+    const ln=kassyLine();ctx.textAlign="center";ctx.textBaseline="middle";ctx.font="400 20px "+F.p;
+    const lw=ctx.measureText(ln).width+32, lx=Math.min(698-lw/2,790-lw);
+    rr(ctx,lx,94,lw,44,22);ctx.fillStyle="#fff";ctx.fill();ctx.lineWidth=3;ctx.strokeStyle="#1D2340";ctx.stroke();
+    ctx.beginPath();ctx.moveTo(688,136);ctx.lineTo(698,150);ctx.lineTo(708,136);ctx.closePath();ctx.fillStyle="#fff";ctx.fill();
+    ctx.beginPath();ctx.moveTo(688,137.5);ctx.lineTo(698,150);ctx.lineTo(708,137.5);ctx.strokeStyle="#1D2340";ctx.stroke();
+    ctx.fillStyle="#1D2340";ctx.fillText(ln,lx+lw/2,116);
+    ctx.drawImage(bot,628,150,140,154);
+    ctx.textAlign="center";ctx.textBaseline="middle";ctx.font="400 22px "+F.p;const nw=ctx.measureText("かっしー").width+28;
+    rr(ctx,698-nw/2,312,nw,36,18);ctx.fillStyle="#1D2340";ctx.fill();ctx.fillStyle="#fff";ctx.fillText("かっしー",698,331); }
+  drawMoment(ctx,800,72,320,586,snap,mode,botM);
   return c;
 }
 
 async function renderImages(){
   $("shareImg").removeAttribute("src");$("momentImg").removeAttribute("src");
   $("momentWrap").style.display=snap?"block":"none";
-  const words=TITLES.map(x=>x[1]).join("")+TIERS.join("")+"簿記ミニゲーム｜"+M.title+"称号：最高コンボの瞬間正答率最大コンボフィーバー回得点×2中！いい調子経理・簿記の人なら60秒で何点取れる？資産負債純資産収益費用借方貸方"+(snap?snap.main+snap.sub:"コンボなし");
+  const words=TITLES.map(x=>x[1]).join("")+Object.values(WORDS).join("")+"減価償却が止まらない次いこうかっしー簿記ミニゲーム｜"+M.title+"称号：最高コンボの瞬間正答率最大コンボフィーバー回得点×2中！いい調子経理・簿記の人なら60秒で何点取れる？資産負債純資産収益費用借方貸方"+(snap?snap.main+snap.sub:"コンボなし");
   await loadImgFonts(words);
   try{
-    if(snap){const m=document.createElement("canvas");m.width=720;m.height=1280;drawMoment(m.getContext("2d"),0,0,720,1280,snap,mode);$("momentImg").src=m.toDataURL("image/png")}
-    shareCanvas=drawShare();$("shareImg").src=shareCanvas.toDataURL("image/png");
+    const botM=snap?await botImage(snap.fever||snap.combo>=5?"excited":"happy"):null, botS=await botImage($("botRes").dataset.face||"happy");
+    if(snap){const m=document.createElement("canvas");m.width=720;m.height=1280;drawMoment(m.getContext("2d"),0,0,720,1280,snap,mode,botM);$("momentImg").src=m.toDataURL("image/png")}
+    shareCanvas=drawShare(botS,botM);$("shareImg").src=shareCanvas.toDataURL("image/png");
   }catch(e){}
 }
+
+// ===== 行動の計測（GoatCounter のイベント。localhost では送られない）=====
+// start-◯ / finish-◯ / quit-◯（◯は sort か lr）、share-x / share-copy / share-save / share-image
+function track(name){ try{ if(window.goatcounter&&window.goatcounter.count) window.goatcounter.count({path:name,title:name,event:true}); }catch(e){} }
 
 // ===== スコア送信（Google スプレッドシートへ） =====
 function playerId(){let id=store.get("pid",null);if(!id){id=Date.now().toString(36)+Math.random().toString(36).slice(2,10);store.set("pid",id)}return id}
 function sendScore(){
   if(!SCORE_ENDPOINT) return;
   const body={pid:playerId(),name:(store.get("nick","")||"").slice(0,12),mode,score,title:titleFor(score)[1],correct,total,maxCombo,fever:feverCount};
+  // PC内でのテスト中は本番のスプレッドシートに送らない
+  if(IS_LOCAL){console.log("[テスト環境] スコア送信をスキップ",body);return}
   // text/plain の POST はプリフライト不要。応答は読まないので no-cors で送る
   try{fetch(SCORE_ENDPOINT,{method:"POST",mode:"no-cors",keepalive:true,headers:{"Content-Type":"text/plain"},body:JSON.stringify(body)}).catch(()=>{})}catch(e){}
 }
@@ -823,11 +1062,24 @@ async function shareImage(){
 }
 try{if(window.claude&&window.claude.use)window.claude.use("downloads").then(n=>{dlNS=n}).catch(()=>{})}catch(e){}
 
+// 結果に合わせたかっしーの一言（シェア文と画像に入れる）
+let lastIsNew=false;
+function kassyLine(){
+  if(lastIsNew) return "過去最高益！";
+  if(maxCombo>=30) return "減価償却が止まらない！";
+  if(total>=10&&correct===total) return "差額ゼロ！";
+  if(maxCombo>=25) return "決算確定！";
+  if(maxCombo>=15) return "貸借一致！";
+  if(maxCombo>=10) return "黒字フィーバー！";
+  if(score>=150) return "その調子！";
+  return "次いこう！";
+}
+// Xの上限（280。日本語・絵文字は2と数える）に収まるよう、マスは最初の20問・正答率は短い書き方
 function shareText(){
-  const rows=[];const g=marks.slice(0,30).map(v=>v?"🟩":"🟥");
+  const rows=[];const g=marks.slice(0,20).map(v=>v?"🟩":"🟥");
   for(let i=0;i<g.length;i+=10) rows.push(g.slice(i,i+10).join(""));
   const rate=total?Math.round(correct/total*100):0;
-  return "簿記ミニゲーム「"+M.title+"」\n"+score+"点・称号「"+titleFor(score)[1]+"」\n（"+total+"問中"+correct+"問正解・正答率"+rate+"%）\n🔥最大"+maxCombo+"コンボ"+(feverCount?"・🎉フィーバー"+feverCount+"回":"")+"\n"+rows.join("\n")+"\n\n経理・簿記の人なら60秒で何点取れる？\n#簿記 #簿記3級";
+  return "簿記ミニゲーム「"+M.title+"」\n"+score+"点・称号「"+titleFor(score)[1]+"」\n正答率"+rate+"%（"+correct+"/"+total+"問）\n🔥最大"+maxCombo+"コンボ"+(feverCount?"・🎉フィーバー"+feverCount+"回":"")+"\n🤖かっしー「"+kassyLine()+"」\n"+rows.join("\n")+"\n\n経理・簿記の人なら60秒で何点取れる？\n#簿記 #簿記3級";
 }
 
 function countUp(el,to){
@@ -837,9 +1089,12 @@ function countUp(el,to){
 }
 
 function finish(){
-  ended=true;locked=true;hideSheet();bumpStreak();endFever();SFX.end();
+  ended=true;locked=true;hideSheet();bumpStreak();endFever();hush();SFX.end();
   const k="best_"+mode, best=store.get(k,0), isNew=score>best&&score>0;
   if(isNew) store.set(k,score);
+  lastIsNew=isNew; track("finish-"+mode);
+  $("botRes").dataset.face=isNew?"excited":score>=150?"happy":"normal";
+  say("shimekiri"); voiceTimer=setTimeout(()=>say(isNew?"saikoueki":"otsukare"),1300);
   if(total>0) saveHistory();
   if(total>0) sendScore();
   $("rname").textContent=M.title+" の結果";
@@ -872,16 +1127,24 @@ async function copyResult(){
 }
 
 document.querySelectorAll(".ans").forEach(b=>b.addEventListener("click",()=>answer(b.dataset.c)));
-document.querySelectorAll(".tile").forEach(b=>b.addEventListener("click",()=>start(b.dataset.mode)));
+// ステップ2（左右ジャッジ）は準備中。再開するときは LR_OPEN を true にする
+const LR_OPEN=false;
+if(!LR_OPEN){
+  const t=document.querySelector('.tile[data-mode="lr"]'); t.disabled=true; t.classList.add("soon");
+  t.querySelector(".best").outerHTML='<span class="soonTag">準備中</span>';
+  document.querySelector(".tabs").style.display="none"; rankMode="sort";
+}
+document.querySelectorAll(".tile").forEach(b=>b.addEventListener("click",()=>{ if(!b.disabled) start(b.dataset.mode); }));
 $("again").addEventListener("click",()=>start(mode));
 $("home").addEventListener("click",()=>{refreshMenu();show("menu")});
-$("quit").addEventListener("click",()=>{clearInterval(timer);ended=true;hideSheet();endFever();refreshMenu();show("menu")});
-$("copy").addEventListener("click",copyResult);
-$("saveImg").addEventListener("click",saveImage);
+$("quit").addEventListener("click",()=>{if(!ended&&total>0) track("quit-"+mode);clearCountdown();clearInterval(timer);ended=true;hideSheet();endFever();hush();refreshMenu();show("menu")});
+$("copy").addEventListener("click",()=>{track("share-copy");copyResult()});
+$("saveImg").addEventListener("click",()=>{track("share-save");saveImage()});
+$("shareX").addEventListener("click",()=>track("share-x"));
 $("nick").value=store.get("nick","");
 $("nick").addEventListener("input",()=>store.set("nick",$("nick").value.trim().slice(0,12)));
 document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>{rankMode=b.dataset.rank;renderRank()}));
-$("shareImgBtn").addEventListener("click",shareImage);
+$("shareImgBtn").addEventListener("click",()=>{track("share-image");shareImage()});
 $("sndMenu").addEventListener("click",()=>setSound(!soundOn));
 $("sndGame").addEventListener("click",()=>setSound(!soundOn));
 setSound(soundOn,true);
@@ -899,6 +1162,8 @@ document.addEventListener("keydown",e=>{
   if(e.key==="ArrowRight")answer("cr");
 });
 refreshMenu();
+// 掛け声はトップ画面を開いた時点で読み込んでおく（初回の「よーい、スタート！」に間に合わせるため）
+if(soundOn){ audio(); loadVoices(); }
 </script>
 </body>
 </html>
