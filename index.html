@@ -146,6 +146,8 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--asset);outline-offs
 .sheet .mark{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:22px}
 .sheet.good .mark{background:var(--good)}
 .sheet.bad .mark{background:var(--bad)}
+.sheet .snext{display:none;margin-top:4px;font-size:12px;color:var(--sub)}
+.sheet.bad .snext{display:block}
 .sheet h3{margin:0 0 2px;font-size:20px}
 .sheet p{margin:0;font-size:14px;line-height:1.55;color:var(--ink)}
 
@@ -191,7 +193,6 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--asset);outline-offs
 .rstats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0 14px}
 .rstat{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:10px 6px;text-align:center;font-size:12px;color:var(--sub)}
 .rstat b{display:block;font-family:var(--display);font-weight:400;font-size:22px;color:var(--ink);margin-bottom:2px}
-.grid{text-align:center;font-size:18px;letter-spacing:2px;line-height:1.35;margin:4px 0 16px;word-break:break-all}
 .share{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:6px}
 .copy{padding:0 18px;font-size:15px}
 .toast{text-align:center;font-size:13px;color:var(--good);min-height:1.4em;margin-bottom:8px}
@@ -442,7 +443,7 @@ body.fever .bot.sm svg{animation:feverbot .4s ease-in-out infinite alternate}
 <div class="mega" id="mega"><div class="txt" id="megaTxt"></div></div>
 <div class="count" id="count"><span id="countTxt"></span></div>
 <div class="sheet" id="sheet" aria-live="assertive">
-  <div class="in"><div class="mark" id="smark"></div><div><h3 id="stitle"></h3><p id="sbody"></p></div></div>
+  <div class="in"><div class="mark" id="smark"></div><div><h3 id="stitle"></h3><p id="sbody"></p><p class="snext">タップで次の問題へ</p></div></div>
 </div>
 
 <script>
@@ -583,7 +584,7 @@ const store = {
 const reduceMotion = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const DURATION=60;
-let mode="sort",M=MODES.sort,pool=[],deck=[],cur=null,score=0,combo=0,maxCombo=0,correct=0,total=0,misses=[],marks=[],endAt=0,timer=null,locked=true,ended=false;
+let mode="sort",M=MODES.sort,pool=[],deck=[],cur=null,score=0,combo=0,maxCombo=0,correct=0,total=0,misses=[],endAt=0,timer=null,locked=true,ended=false;
 let snap=null,shareCanvas=null,dlNS=null;
 let fever=false,feverUntil=0,feverCount=0,soundOn=store.get("sound",true),actx=null;
 
@@ -628,14 +629,14 @@ let cdTimers=[];
 function clearCountdown(){ cdTimers.forEach(clearTimeout); cdTimers=[]; $("count").classList.remove("on"); }
 function start(m){
   mode=m;M=MODES[m];pool=M.items();
-  score=0;combo=0;maxCombo=0;correct=0;total=0;misses=[];marks=[];ended=false;
+  score=0;combo=0;maxCombo=0;correct=0;total=0;misses=[];ended=false;
   endFever();feverCount=0;snap=null;hush();audio();loadVoices();
   deck=shuffle(pool.slice());
   $("qlabel").textContent=M.label; $("hint").textContent=M.hint;
   document.querySelectorAll(".board").forEach(b=>b.classList.toggle("on",b.id===M.board));
   updateStats(); hideSheet();
   // カウントダウン中は問題を出さず、時間も止めておく
-  clearCountdown(); clearInterval(timer); locked=true; cur=null; $("qtext").innerHTML="";
+  clearCountdown(); clearInterval(timer); clearTimeout(missTimer); missTimer=null; locked=true; cur=null; $("qtext").innerHTML="";
   $("sec").textContent=DURATION; $("tfill").style.transform="scaleX(1)"; $("tbar").classList.remove("low");
   botFace("normal");
   show("game"); track("start-"+m);
@@ -666,14 +667,23 @@ function updateStats(){
   $("comboBox").classList.toggle("hot",combo>=3);
 }
 
+// 誤答の解説を出している間（missTimer がある間）のタップは、解説を閉じて次へ進むだけにする
+let missTimer=null;
+function skipMiss(){
+  if(!missTimer||ended) return;
+  clearTimeout(missTimer); missTimer=null; next();
+  // 同じタップが次の問題の答えにならないよう、少しだけ押せない時間を作る
+  locked=true; setTimeout(()=>{ if(!ended) locked=false; },250);
+}
 function answer(c){
+  if(missTimer){ skipMiss(); return; }
   if(locked||!cur||ended) return;
   total++;
   const card=$("qcard");
   const btn=document.querySelector("#"+M.board+' .ans[data-c="'+c+'"]');
   if(btn){ btn.classList.remove("boing"); restart(btn,"squish"); }
   if(c===cur.ans){
-    combo++;correct++;maxCombo=Math.max(maxCombo,combo);marks.push(1);
+    combo++;correct++;maxCombo=Math.max(maxCombo,combo);
     const gain=(10+Math.min(combo-1,10)*2)*(fever?2:1); score+=gain;
     SFX.ok(combo);
     if(!flyTo(btn,combo) && mode==="lr") restart(card,c==="dr"?"flyL":"flyR");
@@ -687,13 +697,13 @@ function answer(c){
   }else{
     if(combo>=3){ $("cend").textContent=combo+"コンボでストップ"; restart($("cend"),"on"); }
     say(combo>=5?"miss2":["miss1","miss2","miss3"][Math.floor(Math.random()*3)]);
-    combo=0;marks.push(0);endFever();SFX.ng();
+    combo=0;endFever();SFX.ng();
     botFace("sad",1500); botHop("shiver");
     if(!misses.find(m=>m.key===cur.key)) misses.push(cur);
     restart(card,"shake");
     if(navigator.vibrate) try{navigator.vibrate(60)}catch(e){}
     sheet("bad","正解は "+M.name(cur.ans),cur.ex);
-    locked=true; setTimeout(next,1500);
+    locked=true; missTimer=setTimeout(()=>{ missTimer=null; next(); },1500);
   }
   updateStats();
 }
@@ -994,9 +1004,9 @@ function drawShare(bot,botM){
     const bx=64+i*196,by=364;rr(ctx,bx,by,180,104,20);ctx.fillStyle="#fff";ctx.fill();ctx.lineWidth=3;ctx.strokeStyle="#DFE3EE";ctx.stroke();
     ctx.textAlign="center";ctx.fillStyle="#1D2340";ctx.font="400 38px "+F.d;ctx.fillText(v[0],bx+90,by+42);
     ctx.fillStyle="#6B7290";ctx.font="800 20px "+F.r;ctx.fillText(v[1],bx+90,by+80)});
-  const sq=24,gp=6;marks.slice(0,30).forEach((v,i)=>{rr(ctx,64+(i%15)*(sq+gp),496+Math.floor(i/15)*(sq+gp),sq,sq,5);ctx.fillStyle=v?"#22A45A":"#E5404F";ctx.fill()});
-  ctx.textAlign="left";ctx.textBaseline="alphabetic";ctx.fillStyle="#1D2340";ctx.font="800 26px "+F.r;
-  ctx.fillText("経理・簿記の人なら60秒で何点取れる？",64,622);
+  ctx.textAlign="left";ctx.textBaseline="alphabetic";ctx.fillStyle="#1D2340";ctx.font="800 32px "+F.r;
+  ctx.fillText("経理・簿記の人なら60秒で何点取れる？",64,548);
+  ctx.fillStyle="#1E7FE0";ctx.font="800 24px "+F.r;ctx.fillText("#簿記ミニゲーム",64,594);
   ctx.textAlign="center";ctx.fillStyle="#6B7290";ctx.font="800 20px "+F.r;ctx.fillText("最高コンボの瞬間",960,56);
   if(bot){
     // 吹き出し（右端は「最高コンボの瞬間」に重ならないよう 790 まで）
@@ -1091,12 +1101,10 @@ function kassyLine(){
   if(score>=150) return "その調子！";
   return "次いこう！";
 }
-// Xの上限（280。日本語・絵文字は2と数える）に収まるよう、マスは最初の20問・正答率は短い書き方
+// Xの上限（280。日本語・絵文字は2と数える）に収まる長さ。#簿記ミニゲーム でシェアを探せる
 function shareText(){
-  const rows=[];const g=marks.slice(0,20).map(v=>v?"🟩":"🟥");
-  for(let i=0;i<g.length;i+=10) rows.push(g.slice(i,i+10).join(""));
   const rate=total?Math.round(correct/total*100):0;
-  return "簿記ミニゲーム「"+M.title+"」\n"+score+"点・称号「"+titleFor(score)[1]+"」\n正答率"+rate+"%（"+correct+"/"+total+"問）\n🔥最大"+maxCombo+"コンボ"+(feverCount?"・🎉フィーバー"+feverCount+"回":"")+"\n🤖かっしー「"+kassyLine()+"」\n"+rows.join("\n")+"\n\n経理・簿記の人なら60秒で何点取れる？\n#簿記 #簿記3級";
+  return "簿記ミニゲーム「"+M.title+"」\n"+score+"点・称号「"+titleFor(score)[1]+"」\n正答率"+rate+"%（"+correct+"/"+total+"問）\n🔥最大"+maxCombo+"コンボ"+(feverCount?"・🎉フィーバー"+feverCount+"回":"")+"\n🤖かっしー「"+kassyLine()+"」\n\n経理・簿記の人なら60秒で何点取れる？\n#簿記ミニゲーム #簿記 #簿記3級";
 }
 
 function countUp(el,to){
@@ -1153,6 +1161,7 @@ if(!LR_OPEN){
 }
 document.querySelectorAll(".tile").forEach(b=>b.addEventListener("click",()=>{ if(!b.disabled) start(b.dataset.mode); }));
 $("again").addEventListener("click",()=>start(mode));
+$("sheet").addEventListener("click",skipMiss);
 $("home").addEventListener("click",()=>{refreshMenu();show("menu")});
 $("quit").addEventListener("click",()=>{if(!ended&&total>0) track("quit-"+mode);clearCountdown();clearInterval(timer);ended=true;hideSheet();endFever();hush();refreshMenu();show("menu")});
 $("copy").addEventListener("click",()=>{track("share-copy");copyResult()});
