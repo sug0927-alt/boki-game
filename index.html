@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>簿記ミニゲーム</title>
-<meta name="description" content="経理・簿記の人なら60秒で何点取れる？勘定科目を5要素に振り分ける「5要素ジャッジ」のミニゲーム。日商簿記3級対策に。登録不要・スマホで遊べます。">
+<meta name="description" content="経理・簿記の人なら60秒で何点取れる？勘定科目を5要素に振り分ける「5要素ジャッジ」と、借方・貸方を判定する「左右ジャッジ」のミニゲーム。日商簿記3級対策に。登録不要・スマホで遊べます。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="簿記ミニゲーム｜60秒で何点取れる？">
-<meta property="og:description" content="勘定科目を5要素に瞬時に仕分ける「5要素ジャッジ」。コンボでフィーバー、称号は「伝説の会計士」まで。登録不要・スマホで遊べます。">
+<meta property="og:description" content="5要素ジャッジと左右ジャッジ。コンボでフィーバー、称号は「伝説の会計士」まで。登録不要・スマホで遊べます。">
 <meta property="og:url" content="https://sug0927-alt.github.io/boki-game/">
 <meta property="og:image" content="https://sug0927-alt.github.io/boki-game/og.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -111,6 +111,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--asset);outline-offs
 .qcard{position:relative;flex:none;min-height:170px;background:var(--card);border:2px solid var(--line);border-radius:22px;box-shadow:0 6px 0 var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px 14px;margin-bottom:22px;touch-action:pan-y;-webkit-user-select:none;user-select:none}
 .qlabel{position:absolute;top:12px;left:16px;font-size:12px;color:var(--sub)}
 .qtext{font-family:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN","Hiragino Sans",sans-serif;font-weight:800;font-size:clamp(26px,8.5vw,36px);line-height:1.4;letter-spacing:.04em;text-align:center}
+.qtext.long{font-size:clamp(22px,6.6vw,28px)}
 .qtext small{display:block;font-family:"M PLUS Rounded 1c",sans-serif;font-weight:800;font-size:18px;color:var(--sub);margin-top:4px}
 .qcard.shake{animation:shake .3s}
 @keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
@@ -146,6 +147,18 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--asset);outline-offs
 .sheet .mark{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:22px}
 .sheet.good .mark{background:var(--good)}
 .sheet.bad .mark{background:var(--bad)}
+/* 経理課長（誤答の解説と結果画面に登場） */
+.sface{display:none;flex:none;width:58px;height:58px;border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:0 2px 0 rgba(0,0,0,.12)}
+.sheet.bad .mark{display:none}
+.sheet.bad .sface{display:block}
+.sface.robot{object-fit:contain;background:#fff;padding:4px}
+.sline{display:none;margin:0 0 2px;font-size:12px;color:var(--ink)}
+.sheet.bad .sline{display:block}
+.kacho{display:flex;align-items:center;gap:12px;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:10px 12px;margin:14px 0 0;text-align:left}
+.kacho img{flex:none;width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid var(--line)}
+.kacho b{font-size:12px;color:var(--sub)}
+.kacho img.robot{object-fit:contain;background:#fff;padding:5px}
+.kacho p{margin:2px 0 0;font-size:15px;line-height:1.5}
 .sheet .snext{display:none;margin-top:4px;font-size:12px;color:var(--sub)}
 .sheet.bad .snext{display:block}
 .sheet h3{margin:0 0 2px;font-size:20px}
@@ -274,11 +287,21 @@ body.fever .plus{color:#E08A00}
 .bot .mouth{transform-box:fill-box;transform-origin:center top}
 .bot.talk .mouth{animation:talk .16s ease-in-out infinite alternate}
 @keyframes talk{from{transform:scaleY(1)}to{transform:scaleY(.35)}}
-.bot.hop svg{animation:hop .35s ease-out}
+.bot.hop svg,.bot.hop .kwrap{animation:hop .35s ease-out}
 @keyframes hop{40%{transform:translateY(-7px)}}
-.bot.shiver svg{animation:shiver .3s}
+.bot.shiver svg,.bot.shiver .kwrap{animation:shiver .3s}
 @keyframes shiver{25%{transform:translateX(-3px) rotate(-4deg)}75%{transform:translateX(3px) rotate(4deg)}}
-body.fever .bot.sm svg{animation:feverbot .4s ease-in-out infinite alternate}
+body.fever .bot.sm svg,body.fever .bot.sm .kwrap{animation:feverbot .4s ease-in-out infinite alternate}
+/* 相棒が経理課長のとき：丸い枠の中に表情の画像。しゃべるときは小さく弾む */
+.kwrap{display:block;width:100%;aspect-ratio:1/1;border-radius:50%;overflow:hidden;border:3px solid #fff;box-shadow:0 3px 0 rgba(0,0,0,.15);background:#E9EEF8;line-height:0}
+.kwrap img.f{width:100%;height:100%;object-fit:cover}
+.bot.talk .kwrap{animation:ktalk .18s ease-in-out infinite alternate}
+@keyframes ktalk{from{transform:translateY(0) scale(1)}to{transform:translateY(-2px) scale(1.03)}}
+/* 相棒の切り替え（トップ画面） */
+.partner{display:flex;align-items:center;gap:10px;margin:6px 0 14px;font-size:13px;color:var(--sub)}
+.ptabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--line);border-radius:12px;padding:3px;flex:1}
+.ptabs button{border:0;background:transparent;color:var(--sub);border-radius:9px;padding:7px 4px;font-size:13px}
+.ptabs button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 2px 0 var(--lineD)}
 @keyframes feverbot{from{transform:translateY(0) rotate(-4deg)}to{transform:translateY(-4px) rotate(4deg)}}
 
 /* 手応え：コンボの掛け声は段階ごとに色と大きさが強くなる */
@@ -305,7 +328,7 @@ body.fever .bot.sm svg{animation:feverbot .4s ease-in-out infinite alternate}
   body.fever .feverTag,body.fever .tbar i{animation:none}
   .qcard.glow::after,.flash.on{animation:none}
   .qcard.shake,.qcard.flyL,.qcard.flyR,.burst.on{animation:none}
-  .ans.squish,.ans.boing,.bot .eyes,.bot.talk .mouth,.bot.hop svg,.bot.shiver svg,body.fever .bot.sm svg{animation:none}
+  .ans.squish,.ans.boing,.bot .eyes,.bot.talk .mouth,.bot.hop svg,.bot.shiver svg,body.fever .bot.sm svg,.bot.hop .kwrap,.bot.shiver .kwrap,body.fever .bot.sm .kwrap,.bot.talk .kwrap{animation:none}
   .cend.on{animation:fadeOnly 1.3s}
   .count span.pop{animation:fadeOnly .55s;transform:none}
   .sheet,.tbar i,.combo{transition:none}
@@ -327,6 +350,7 @@ body.fever .bot.sm svg{animation:feverbot .4s ease-in-out infinite alternate}
       <button class="snd" id="sndMenu">🔊 サウンドON</button>
     </div>
     <div class="brandrow"><h1 class="brand">簿記ミニゲーム</h1><span class="botwrap"><span class="bot" id="botTop" data-face="normal"></span><span class="botname">かっしー</span></span></div>
+    <div class="partner"><span>相棒</span><div class="ptabs"><button data-p="kassy">かっしー</button><button data-p="kacho">経理課長</button></div></div>
     <p class="lead">1回60秒。試験では正確さに加えて、解くスピードも重要です。このゲームでその両方を鍛えられます。</p>
     <button class="tile" data-mode="sort">
       <span class="ico sort">5</span>
@@ -351,7 +375,7 @@ body.fever .bot.sm svg{animation:feverbot .4s ease-in-out infinite alternate}
       </div>
       <div id="rankList"></div>
     </div>
-    <p class="credit">音が出ないときは、マナーモード（消音）を解除してください<br>音声：VOICEVOX:Voidoll(CV:丹下桜)</p>
+    <p class="credit">音が出ないときは、マナーモード（消音）を解除してください<br>音声：VOICEVOX:Voidoll(CV:丹下桜)、VOICEVOX:冥鳴ひまり</p>
   </section>
 
   <section class="screen" id="game">
@@ -403,6 +427,7 @@ body.fever .bot.sm svg{animation:feverbot .4s ease-in-out infinite alternate}
       <div class="rscore" id="rscore">0</div>
       <div class="rtitle" id="rtitle"></div>
       <div class="rnext" id="rnext"></div>
+      <div class="kacho" id="kacho"><img id="kachoImg" alt="経理課長"><div><b id="kachoTitle">経理課長の講評</b><p id="kachoTxt"></p></div></div>
       <span class="newbest" id="newbest">ベストスコア更新</span>
       <div class="rstats">
         <div class="rstat"><b id="rcorrect">0</b>正解数</div>
@@ -443,7 +468,7 @@ body.fever .bot.sm svg{animation:feverbot .4s ease-in-out infinite alternate}
 <div class="mega" id="mega"><div class="txt" id="megaTxt"></div></div>
 <div class="count" id="count"><span id="countTxt"></span></div>
 <div class="sheet" id="sheet" aria-live="assertive">
-  <div class="in"><div class="mark" id="smark"></div><div><h3 id="stitle"></h3><p id="sbody"></p><p class="snext">タップで次の問題へ</p></div></div>
+  <div class="in"><div class="mark" id="smark"></div><img class="sface" id="sface" alt="経理課長"><div><p class="sline" id="sline"></p><h3 id="stitle"></h3><p id="sbody"></p><p class="snext">タップで次の問題へ</p></div></div>
 </div>
 
 <script>
@@ -605,8 +630,30 @@ function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random
 function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("on",s.id===id))}
 function restart(el,cls){el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls)}
 
+// 経理課長の表情画像（kacho/ フォルダ）とセリフ
+const KACHO="kacho/";
+["troubled","angry","smile","shy","grin","serious","sad","surprise","panic"].forEach(n=>{new Image().src=KACHO+n+".jpg"});
+let lostCombo=0;
+// 結果画面：成績に合わせた課長の表情と講評
+function kachoReview(isNew){
+  if(isNew&&score>0) return ["shy","……悪くないわね。自己ベスト、おめでとう"];
+  if(score>=2500) return ["surprise","あなた、うちの課に来ない？"];
+  if(score>=1500) return ["grin","いい仕事ぶりね。その調子よ"];
+  if(score>=800) return ["serious","まずまずね。次はミスを減らしましょう"];
+  if(score>=300) return ["smile","焦らず、一つずつ覚えていきましょう"];
+  return ["sad","……一緒に復習しましょうか"];
+}
+// 誤答の解説の相棒のひと言は、鳴らした掛け声（missKey）と同じセリフにする
+let missKey="miss1";
 function sheet(kind,title,body){
   const s=$("sheet");
+  if(kind==="bad"){
+    // 5コンボ以上で切れたら怒り顔、それ以外は困り顔
+    // 相棒が解説する：課長は困り顔（5コンボ以上で切れたら怒り顔）、かっしーはしょんぼり顔
+    $("sface").src=partner==="kacho"?KACHO+(lostCombo>=5?"angry":"troubled")+".jpg":"data:image/svg+xml;charset=utf-8,"+encodeURIComponent(botSVG("sad"));
+    $("sface").classList.toggle("robot",partner!=="kacho");
+    $("sline").textContent=partnerName()+"「"+wordFor(missKey)+"」";
+  }
   s.className="sheet "+kind+" on";
   $("smark").textContent = kind==="good"?"✓":"✕";
   $("stitle").textContent=title; $("sbody").textContent=body;
@@ -618,6 +665,8 @@ function next(){
   if(deck.length===0) deck=shuffle(pool.slice());
   cur=deck.pop();
   $("qtext").innerHTML=cur.q; $("qtext").style.visibility="";
+  // 長い勘定科目は2行になりロボに触れるので、文字を少し小さくする
+  $("qtext").classList.toggle("long",(cur.main||"").length>=9);
   $("qcard").classList.remove("flyL","flyR","shake");
   hideSheet();
   locked=false;
@@ -646,7 +695,7 @@ function start(m){
     if(i<3) SFX.tick(); else { botFace("happy",600); botHop(); }
   },i*CD_STEP)));
   // 「よーい、スタート！」の「スタート」が画面の「スタート！」に重なるように鳴らす
-  const vd=voiceBuf.start?voiceBuf.start.duration*1000:1300;
+  const vd=bufFor("start")?bufFor("start").duration*1000:1300;
   cdTimers.push(setTimeout(()=>say("start"),Math.max(0,3*CD_STEP-(vd-600))));
   cdTimers.push(setTimeout(()=>{
     $("count").classList.remove("on"); next();
@@ -696,8 +745,9 @@ function answer(c){
     locked=true; setTimeout(next,260);
   }else{
     if(combo>=3){ $("cend").textContent=combo+"コンボでストップ"; restart($("cend"),"on"); }
-    say(combo>=5?"miss2":["miss1","miss2","miss3"][Math.floor(Math.random()*3)]);
-    combo=0;endFever();SFX.ng();
+    missKey=combo>=5?"miss2":["miss1","miss2","miss3"][Math.floor(Math.random()*3)];
+    say(missKey);
+    lostCombo=combo;combo=0;endFever();SFX.ng();
     botFace("sad",1500); botHop("shiver");
     if(!misses.find(m=>m.key===cur.key)) misses.push(cur);
     restart(card,"shake");
@@ -744,17 +794,32 @@ const WORDS={start:"よーい、スタート！",miss1:"ドンマイ！",miss2:"
   muteki:"無敵！",kanpeki:"完璧！",densetsu:"伝説級！",saikyo:"最強！",tatsujinnoiki:"達人の域！",susamajii:"すさまじい！",ijigen:"異次元！",ato1c:"あと1つでフィーバー！",
   // 節目だけ簿記のセリフ（テンポを崩さないよう短い言葉）。31コンボ以降は好きな勘定科目「減価償却」を言い続ける
   sagaku:"差額ゼロ！",taishaku:"貸借一致！",kakutei:"決算確定！",kurojifever:"黒字フィーバー！",kessanfever:"決算フィーバー！",genka:"減価償却！"};
-const voiceBuf={}; let voiceSrc=null, voicePromise=null, voiceTimer=null;
-// ファイルはページ表示時に取得しておき、ゲーム開始時（ユーザー操作後）に音として使える形にする
-const voiceRaw={};
-Object.keys(WORDS).forEach(k=>{voiceRaw[k]=fetch("voice/"+k+".wav").then(r=>r.ok?r.arrayBuffer():null).catch(()=>null)});
+// 経理課長の掛け声（同じキーで、課長らしい言い方）。節目の簿記セリフも課長専用
+const WORDS_K={start:"始めるわよ",miss1:"根拠は？",miss2:"惜しいわね",miss3:"落ち着いて",shimekiri:"締めの時間よ",otsukare:"お疲れさま",saikoueki:"今期、最高益よ",
+  iine:"いいわね",sonochoshi:"その調子",umai:"悪くないわ",iinagare:"いい流れね",kiteru:"乗ってきたわね",saeteru:"冴えてるわね",ato1:"あと1つでフィーバーよ",
+  sugoi:"やるわね",subarashii:"見事ね",kireteru:"キレてるわ",madamada:"まだいけるわ",tomaranai:"止まらないわね",attoteki:"圧倒的ね",tensai:"天才かしら",ato1b:"あと1つでフィーバーよ",
+  muteki:"無敵ね",kanpeki:"完璧よ",densetsu:"伝説級ね",saikyo:"最強ね",tatsujinnoiki:"達人の域ね",susamajii:"すさまじいわ",ijigen:"異次元ね",ato1c:"あと1つでフィーバーよ",
+  sagaku:"仕訳は正確ね",taishaku:"貸借ぴったりよ",kakutei:"監査も通るわ",kurojifever:"今期は黒字ね",kessanfever:"査定上げておくわ",genka:"帰りましょう",satei:"集中して",zangyo:"残業ゼロね",nextkacho:"次期課長よ"};
+const VOICE_DIR={kassy:"voice/",kacho:"voice-kacho/"};
+let partner=store.get("partner","kassy");
+const wordFor=k=>(partner==="kacho"?WORDS_K:WORDS)[k];
+const voiceBuf={}; let voiceSrc=null, voiceTimer=null;
+const voiceRaw={}, voicePromise={};
+// 声のファイルはページ表示時（相棒を変えたとき）に取得しておき、ゲーム開始時（ユーザー操作後）に音として使える形にする
+// 相棒ごとのセリフ一覧（課長だけのセリフもある）
+const keysFor=p=>Object.keys(p==="kacho"?WORDS_K:WORDS);
+function fetchVoices(p){ keysFor(p).forEach(k=>{ const id=p+":"+k; if(!voiceRaw[id]) voiceRaw[id]=fetch(VOICE_DIR[p]+k+".wav").then(r=>r.ok?r.arrayBuffer():null).catch(()=>null); }); }
+fetchVoices(partner);
 function loadVoices(){
   const a=audio(); if(!a) return Promise.resolve();
-  if(!voicePromise) voicePromise=Promise.all(Object.keys(WORDS).map(k=>voiceRaw[k].then(b=>b&&new Promise((ok,ng)=>a.decodeAudioData(b,ok,ng))).then(buf=>{if(buf)voiceBuf[k]=buf}).catch(()=>{})));
-  return voicePromise;
+  fetchVoices(partner);
+  if(!voicePromise[partner]) voicePromise[partner]=Promise.all(keysFor(partner).map(k=>{const id=partner+":"+k; return voiceRaw[id].then(b=>b&&new Promise((ok,ng)=>a.decodeAudioData(b,ok,ng))).then(buf=>{if(buf)voiceBuf[id]=buf}).catch(()=>{})}));
+  return voicePromise[partner];
 }
+// 課長の声がまだ無いときは、かっしーの声で代わりに鳴らす
+const bufFor=k=>voiceBuf[partner+":"+k]||voiceBuf["kassy:"+k];
 function say(key){
-  const a=audio(), buf=voiceBuf[key]; if(!a||!buf) return;
+  const a=audio(), buf=bufFor(key); if(!a||!buf) return;
   try{
     hush();
     const s=a.createBufferSource(), g=a.createGain(); g.gain.value=.9;
@@ -788,11 +853,33 @@ function botSVG(face){
    +'<text x="72" y="88.5" text-anchor="middle" font-size="10" font-weight="900" fill="#fff" font-family="sans-serif">=</text>'
    +'</svg>';
 }
-document.querySelectorAll(".bot").forEach(b=>b.innerHTML=botSVG());
+// 経理課長の表情：かっしーの表情名 → 課長の画像
+const KACHO_FACE={normal:"serious",happy:"smile",excited:"grin",sad:"troubled"};
+const kachoMarkup=()=>'<span class="kwrap">'+Object.keys(KACHO_FACE).map(f=>'<img class="f f-'+f+'" src="kacho/'+KACHO_FACE[f]+'.jpg" alt="">').join('')+'</span>';
+const partnerName=()=>partner==="kacho"?"経理課長":"かっしー";
+function renderPartner(){
+  document.querySelectorAll(".bot").forEach(b=>b.innerHTML=partner==="kacho"?kachoMarkup():botSVG());
+  document.querySelectorAll(".botname").forEach(n=>n.textContent=partnerName());
+  document.querySelectorAll(".ptabs button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.p===partner));
+  // 結果画面は、講評カードに相棒の顔が出るので上の相棒は出さない
+  $("botRes").style.display="none";
+}
+renderPartner();
+document.querySelectorAll(".ptabs button").forEach(b=>b.addEventListener("click",()=>{
+  partner=b.dataset.p; store.set("partner",partner); renderPartner(); fetchVoices(partner);
+  if(soundOn){ audio(); loadVoices(); }
+}));
 // 画像（シェア画像など）に描くためのかっしー
 function botImage(face){
   return new Promise(ok=>{const im=new Image();im.onload=()=>ok(im);im.onerror=()=>ok(null);
-    im.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(botSVG(face));});
+    im.src=partner==="kacho"?"kacho/"+(KACHO_FACE[face]||"serious")+".jpg":"data:image/svg+xml;charset=utf-8,"+encodeURIComponent(botSVG(face));});
+}
+// 相棒を画像に描く（課長は丸く切り抜く）
+function drawBot(ctx,im,x,y,w,h){
+  if(partner!=="kacho"){ ctx.drawImage(im,x,y,w,h); return; }
+  const d=Math.min(w,h), cx=x+w/2, cy=y+h-d/2;
+  ctx.save(); ctx.beginPath(); ctx.arc(cx,cy,d/2,0,Math.PI*2); ctx.fillStyle="#fff"; ctx.fill();
+  ctx.beginPath(); ctx.arc(cx,cy,d/2-3,0,Math.PI*2); ctx.clip(); ctx.drawImage(im,cx-d/2,cy-d/2,d,d); ctx.restore();
 }
 let botTimer=null;
 // 一時的に表情を変えて、ms 後に「いつもの顔」（フィーバー中は大はしゃぎ）に戻す
@@ -833,14 +920,16 @@ function endFever(){ fever=false; document.body.classList.remove("fever"); if($(
 const COMBO_CALLS={2:"iine",3:"sonochoshi",4:"umai",5:"sagaku",6:"iinagare",7:"kiteru",8:"saeteru",9:"ato1",
   11:"sugoi",12:"subarashii",13:"kireteru",14:"madamada",15:"taishaku",16:"tomaranai",17:"attoteki",18:"tensai",19:"ato1b",
   21:"muteki",22:"kanpeki",23:"densetsu",24:"saikyo",25:"kakutei",26:"tatsujinnoiki",27:"susamajii",28:"ijigen",29:"ato1c"};
-// フィーバーは 黒字（10,30,50…）と 決算（20,40…）を交互に。31コンボ以降はフィーバー以外ずっと「減価償却！」
+// フィーバーは 黒字（10,30,50…）と 決算（20,40…）を交互に。31コンボ以降はフィーバー以外ずっと「減価償却！」（課長は別のセリフ）
 function callFor(n){
   if(n%10===0) return (n/10)%2?"kurojifever":"kessanfever";
-  return COMBO_CALLS[n]||"genka";
+  // 31コンボ以降：かっしーは「減価償却！」、課長は4つのセリフを順番に
+  if(COMBO_CALLS[n]) return COMBO_CALLS[n];
+  return partner==="kacho"?["genka","satei","zangyo","nextkacho"][(n-31)%4]:"genka";
 }
 function comboFx(n){
   if(n<2) return;
-  const key=callFor(n), word=WORDS[key];
+  const key=callFor(n), word=wordFor(key);
   say(key);
   if(n>=5) restart($("qcard"),"glow");
   if(n>=5&&n%5===0){
@@ -965,7 +1054,7 @@ function drawMoment(ctx,x,y,w,h,s,mk,bot){
   if(fv){const ft="フィーバー 得点×2";ctx.font="400 "+(12*k)+"px "+F.p;const fw=ctx.measureText(ft).width+22*k;
     const g=ctx.createLinearGradient(ix+iw/2-fw/2,0,ix+iw/2+fw/2,0);g.addColorStop(0,"#FF5E7E");g.addColorStop(1,"#FFB020");
     rr(ctx,ix+iw/2-fw/2,cy+qh-32*k,fw,22*k,11*k);ctx.fillStyle=g;ctx.fill();ctx.fillStyle="#fff";ctx.fillText(ft,ix+iw/2,cy+qh-21*k)}
-  if(bot) ctx.drawImage(bot,ix+P+(iw-2*P)*.28-45*k,cardTop-60*k,90*k,99*k);
+  if(bot) drawBot(ctx,bot,ix+P+(iw-2*P)*.28-45*k,cardTop-60*k,90*k,99*k);
   cy+=qh+26*k;
   const bw=(iw-2*P-12*k)/2,lh=iy+ih-cy-22*k;
   const btn=(bx,by,w2,h2,col,sh,label)=>{rr(ctx,bx,by+5*k,w2,h2,14*k);ctx.fillStyle=sh;ctx.fill();rr(ctx,bx,by,w2,h2,14*k);ctx.fillStyle=col;ctx.fill();ctx.fillStyle="#fff";fit(ctx,label,"800",F.r,(mk==="lr"?26:18)*k,w2-8*k);ctx.fillText(label,bx+w2/2,by+h2/2)};
@@ -1010,15 +1099,15 @@ function drawShare(bot,botM){
   ctx.textAlign="center";ctx.fillStyle="#6B7290";ctx.font="800 20px "+F.r;ctx.fillText("最高コンボの瞬間",960,56);
   if(bot){
     // 吹き出し（右端は「最高コンボの瞬間」に重ならないよう 790 まで）
-    const ln=kassyLine();ctx.textAlign="center";ctx.textBaseline="middle";ctx.font="400 20px "+F.p;
+    const ln=partner==="kacho"?kachoReview(lastIsNew)[1]:kassyLine();ctx.textAlign="center";ctx.textBaseline="middle";ctx.font="400 20px "+F.p;
     const lw=ctx.measureText(ln).width+32, lx=Math.min(698-lw/2,790-lw);
     rr(ctx,lx,94,lw,44,22);ctx.fillStyle="#fff";ctx.fill();ctx.lineWidth=3;ctx.strokeStyle="#1D2340";ctx.stroke();
     ctx.beginPath();ctx.moveTo(688,136);ctx.lineTo(698,150);ctx.lineTo(708,136);ctx.closePath();ctx.fillStyle="#fff";ctx.fill();
     ctx.beginPath();ctx.moveTo(688,137.5);ctx.lineTo(698,150);ctx.lineTo(708,137.5);ctx.strokeStyle="#1D2340";ctx.stroke();
     ctx.fillStyle="#1D2340";ctx.fillText(ln,lx+lw/2,116);
-    ctx.drawImage(bot,628,150,140,154);
-    ctx.textAlign="center";ctx.textBaseline="middle";ctx.font="400 22px "+F.p;const nw=ctx.measureText("かっしー").width+28;
-    rr(ctx,698-nw/2,312,nw,36,18);ctx.fillStyle="#1D2340";ctx.fill();ctx.fillStyle="#fff";ctx.fillText("かっしー",698,331); }
+    drawBot(ctx,bot,628,150,140,154);
+    ctx.textAlign="center";ctx.textBaseline="middle";ctx.font="400 22px "+F.p;const nw=ctx.measureText(partnerName()).width+28;
+    rr(ctx,698-nw/2,312,nw,36,18);ctx.fillStyle="#1D2340";ctx.fill();ctx.fillStyle="#fff";ctx.fillText(partnerName(),698,331); }
   drawMoment(ctx,800,72,320,586,snap,mode,botM);
   return c;
 }
@@ -1104,7 +1193,7 @@ function kassyLine(){
 // Xの上限（280。日本語・絵文字は2と数える）に収まる長さ。#簿記ミニゲーム でシェアを探せる
 function shareText(){
   const rate=total?Math.round(correct/total*100):0;
-  return "簿記ミニゲーム「"+M.title+"」\n"+score+"点・称号「"+titleFor(score)[1]+"」\n正答率"+rate+"%（"+correct+"/"+total+"問）\n🔥最大"+maxCombo+"コンボ"+(feverCount?"・🎉フィーバー"+feverCount+"回":"")+"\n🤖かっしー「"+kassyLine()+"」\n\n経理・簿記の人なら60秒で何点取れる？\n#簿記ミニゲーム #簿記 #簿記3級";
+  return "簿記ミニゲーム「"+M.title+"」\n"+score+"点・称号「"+titleFor(score)[1]+"」\n正答率"+rate+"%（"+correct+"/"+total+"問）\n🔥最大"+maxCombo+"コンボ"+(feverCount?"・🎉フィーバー"+feverCount+"回":"")+"\n"+(partner==="kacho"?"👓経理課長「"+kachoReview(lastIsNew)[1]+"」":"🤖かっしー「"+kassyLine()+"」")+"\n\n経理・簿記の人なら60秒で何点取れる？\n#簿記ミニゲーム #簿記 #簿記3級";
 }
 
 function countUp(el,to){
@@ -1119,6 +1208,10 @@ function finish(){
   if(isNew) store.set(k,score);
   lastIsNew=isNew; track("finish-"+mode);
   $("botRes").dataset.face=isNew?"excited":score>=150?"happy":"normal";
+  // 結果のひと言：相棒が課長なら課長の講評、かっしーならかっしーのひと言
+  if(partner==="kacho"){ const kc=kachoReview(isNew); $("kachoImg").src=KACHO+kc[0]+".jpg"; $("kachoTxt").textContent=kc[1]; $("kachoTitle").textContent="経理課長の講評"; }
+  else { $("kachoImg").src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(botSVG($("botRes").dataset.face)); $("kachoTxt").textContent=kassyLine(); $("kachoTitle").textContent="かっしーのひとこと"; }
+  $("kachoImg").classList.toggle("robot",partner!=="kacho");
   say("shimekiri"); voiceTimer=setTimeout(()=>say(isNew?"saikoueki":"otsukare"),1300);
   if(total>0) saveHistory();
   if(total>0) sendScore();
@@ -1153,7 +1246,7 @@ async function copyResult(){
 
 document.querySelectorAll(".ans").forEach(b=>b.addEventListener("click",()=>answer(b.dataset.c)));
 // ステップ2（左右ジャッジ）は準備中。再開するときは LR_OPEN を true にする
-const LR_OPEN=false;
+const LR_OPEN=true;
 if(!LR_OPEN){
   const t=document.querySelector('.tile[data-mode="lr"]'); t.disabled=true; t.classList.add("soon");
   t.querySelector(".best").outerHTML='<span class="soonTag">準備中</span>';
