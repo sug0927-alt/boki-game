@@ -1155,7 +1155,7 @@ function track(name){ try{ if(window.goatcounter&&window.goatcounter.count) wind
 function playerId(){let id=store.get("pid",null);if(!id){id=Date.now().toString(36)+Math.random().toString(36).slice(2,10);store.set("pid",id)}return id}
 function sendScore(){
   if(!SCORE_ENDPOINT) return;
-  const body={pid:playerId(),name:(store.get("nick","")||"").slice(0,12),mode,score,title:titleFor(score)[1],correct,total,maxCombo,fever:feverCount};
+  const body={pid:playerId(),name:(store.get("nick","")||"").slice(0,12),mode,score,title:titleFor(score)[1],correct,total,maxCombo,fever:feverCount,partner};
   // PC内でのテスト中は本番のスプレッドシートに送らない
   if(IS_LOCAL){console.log("[テスト環境] スコア送信をスキップ",body);return}
   // text/plain の POST はプリフライト不要。応答は読まないので no-cors で送る
