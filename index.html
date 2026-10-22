@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>簿記ミニゲーム</title>
-<meta name="description" content="経理・簿記の人なら60秒で何点取れる？勘定科目を5要素に振り分ける「5要素ジャッジ」と、借方・貸方を判定する「左右ジャッジ」のミニゲーム。日商簿記3級対策に。登録不要・スマホで遊べます。">
+<meta name="description" content="経理・簿記の人なら60秒で何点取れる？勘定科目を5要素に振り分ける「5要素ジャッジ」、借方・貸方を判定する「左右ジャッジ」、15体のキャラとHPを削り合う「仕訳バトル」の簿記ミニゲーム。日商簿記3級対策に。登録不要・スマホで遊べます。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="簿記ミニゲーム｜60秒で何点取れる？">
-<meta property="og:description" content="5要素ジャッジと左右ジャッジ。コンボでフィーバー、称号は「伝説の会計士」まで。登録不要・スマホで遊べます。">
+<meta property="og:description" content="5要素ジャッジ・左右ジャッジに、15体のキャラと仕訳で戦う「仕訳バトル」が登場。登録不要・スマホで遊べます。">
 <meta property="og:url" content="https://sug0927-alt.github.io/boki-game/">
-<meta property="og:image" content="https://sug0927-alt.github.io/boki-game/og.png">
+<meta property="og:image" content="https://sug0927-alt.github.io/boki-game/og.png?v=2">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -226,9 +226,6 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--asset);outline-offs
 .tag{display:inline-block;color:#fff;border-radius:6px;padding:0 7px;font-size:12px;margin-left:6px;vertical-align:1px}
 .empty{color:var(--sub);font-size:14px;padding:6px 0 12px}
 /* 感想を送る（試作版） */
-.feedback{text-align:center;margin:0 0 16px}
-.feedback p{font-size:12px;color:var(--sub);margin:0 0 8px}
-.feedback a{text-decoration:none}
 .rbtns{display:grid;gap:12px;padding-top:12px}
 
 /* サウンド切り替え */
@@ -525,6 +522,139 @@ body.fever .bot.sm svg,body.fever .bot.sm .kwrap{animation:dance .42s ease-in-ou
 /* 初めての人向けの説明 */
 .hint.tut{background:#FFF4D6;color:#7A4A00;border:2px dashed #F2B84B;border-radius:14px;padding:8px 10px;font-size:12.5px;line-height:1.5}
 @media (prefers-reduced-motion: reduce){.count::before,.fend.on,.qtext.qpop,.missfx.on,body.hurry:not(.fever)::after,.sec.tpop,.last span.on,body.fever .bot.sm svg,body.fever .bot.sm .kwrap{animation:none}}
+/* ===== キャラと対戦 ===== */
+#menu .tile.vs{background:linear-gradient(135deg,#B05CF0,#FF5E7E);box-shadow:0 6px 0 #8A2E6E}
+#menu .tile .ico.vs{color:#D64A86;font-size:22px}
+.vsbar{display:none;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:7px 10px;margin:-4px 0 12px}
+body.vsmode .vsbar{display:block}
+.vsrow{display:flex;align-items:center;gap:8px;font-size:12px}
+.vsrow+.vsrow{margin-top:5px}
+.vsrow .vsn{flex:none;width:72px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vsrow.me .vsn{padding-left:30px}
+.vsrow i{flex:1;height:12px;border-radius:12px;background:var(--line);overflow:hidden}
+.vsrow b{display:block;height:100%;border-radius:12px;transform-origin:left;transform:scaleX(0);transition:transform .25s}
+.vsrow.me b{background:linear-gradient(90deg,#3B95F2,#22A45A)}
+.vsrow.opp b{background:linear-gradient(90deg,#FF8A3D,#FF5E7E)}
+.vsrow .vsc{flex:none;width:30px;text-align:right;font-family:var(--display);font-size:16px}
+.vsface{flex:none;width:24px;height:24px;border-radius:50%;object-fit:cover;background:#fff;border:2px solid var(--line);margin-right:-2px}
+.vsface.robot{object-fit:contain;padding:1px}
+.vsface.hop{animation:hop .35s ease-out}
+.vspick{position:fixed;inset:0;z-index:30;background:rgba(18,22,42,.55);display:grid;place-items:center;padding:16px}
+.vspick[hidden]{display:none}
+.vsbox{width:100%;max-width:400px;background:var(--card);border-radius:24px;padding:18px 16px 14px;box-shadow:0 8px 0 rgba(0,0,0,.2)}
+.vsbox h2{margin:0 0 4px;font-family:"Mochiy Pop One","M PLUS Rounded 1c",sans-serif;font-weight:400;font-size:20px;text-align:center}
+.vsrule{margin:0 0 12px;font-size:12px;color:var(--sub);text-align:center;line-height:1.6}
+.vsopp{display:flex;align-items:center;gap:12px;width:100%;text-align:left;margin-bottom:10px;padding:10px 12px;border-radius:18px;border:2px solid var(--line);background:var(--bg);color:var(--ink);box-shadow:0 4px 0 var(--line)}
+.vsopp:active{transform:translateY(3px);box-shadow:0 1px 0 var(--line)}
+.vsopp img{flex:none;width:52px;height:52px;border-radius:50%;object-fit:cover;background:#fff;border:3px solid #fff;box-shadow:0 2px 0 rgba(0,0,0,.12)}
+.vsopp img.robot{object-fit:contain;padding:3px}
+.vsopp .t{flex:1;min-width:0}
+.vsopp b{display:block;font-size:16px}
+.vsopp small{display:block;font-size:12px;color:var(--sub);margin-top:2px}
+.vsopp .lv{flex:none;font-size:12px;color:#fff;padding:4px 10px;border-radius:999px}
+.vsopp .lv.l1{background:var(--equity)} .vsopp .lv.l2{background:var(--fire)} .vsopp .lv.l3{background:var(--bad)}
+.vsopp.locked{opacity:.55;cursor:default}
+#result.vs .vshide{display:none}
+#result.vs .rhero .rscore{font-size:72px;letter-spacing:.02em}
+.vsres-win{color:#E5404F}
+/* ===== 仕訳ジャッジ ===== */
+.board.jr.on{display:flex;flex-direction:column}
+.board.jr .col{flex:1;gap:10px}
+#game .ans.jrb{flex:1;flex-direction:row;justify-content:center;gap:10px;font-size:17px;line-height:1.25;padding:6px 10px;text-align:left}
+#game .ans.jrb::before{height:min(34%,18px)}
+.jrb[data-n="0"]{background:var(--asset);--sh:var(--assetD)}
+.jrb[data-n="1"]{background:var(--liab);--sh:var(--liabD)}
+.jrb[data-n="2"]{background:var(--equity);--sh:var(--equityD)}
+.jrb[data-n="3"]{background:var(--fire);--sh:#C25500}
+.jrb .side{display:flex;align-items:center;gap:5px;min-width:0}
+.jrb .side small{flex:none;font-size:11px;background:rgba(255,255,255,.25);border-radius:6px;padding:1px 5px;margin:0}
+.jrb .sl{flex:none;opacity:.7}
+.qtext.jr{font-size:clamp(17px,5.2vw,21px);line-height:1.5;letter-spacing:.01em;padding:0 6px}
+/* ===== 仕訳バトル（2タップ・HP） ===== */
+.board.jr.on{display:flex;flex-direction:column;gap:10px}
+.jrsel{flex:none;display:grid;grid-template-columns:auto 1fr auto 1fr;align-items:center;gap:6px 8px;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:8px 10px;font-size:15px}
+.jrsel .lab{font-size:11px;color:#fff;border-radius:6px;padding:2px 6px}
+.jrsel .lab:nth-of-type(1){background:var(--dr)} .jrsel .lab:nth-of-type(2){background:var(--cr)}
+.jrsel b{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--sub)}
+.jrsel b.set{color:var(--ink)}
+.jrgrid{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;gap:10px;min-height:0}
+.jrk{position:relative;overflow:hidden;font-size:16px;line-height:1.25;padding:6px;color:#fff;background:#4A5580;--sh:#2F3A66;border-radius:18px;word-break:keep-all;overflow-wrap:anywhere}
+.jrk::before{content:"";position:absolute;left:10px;right:10px;top:6px;height:min(34%,18px);border-radius:12px;background:linear-gradient(rgba(255,255,255,.3),rgba(255,255,255,0));pointer-events:none}
+.jrk.dr{background:var(--dr);--sh:var(--drD);outline:4px solid #fff;outline-offset:-7px}
+.jrk.dr::after{content:"借方";position:absolute;top:5px;right:8px;font-size:10px;background:#fff;color:var(--dr);border-radius:6px;padding:1px 5px}
+.qtext.jr{font-size:clamp(17px,5.2vw,21px);line-height:1.5;letter-spacing:.01em;padding:0 6px}
+/* HPと攻撃ゲージ */
+.vsbar{position:relative}
+.vsrow.me b{background:linear-gradient(90deg,#22A45A,#5ED38B)}
+.vsrow.me b.low{background:linear-gradient(90deg,#E5404F,#FF7A8A)}
+.vsrow.opp b{background:linear-gradient(90deg,#FF5E7E,#FFB020)}
+.vsatk{display:flex;align-items:center;gap:8px;margin-top:5px;font-size:10.5px;color:var(--sub)}
+.vsatk span{flex:none;width:72px;padding-left:30px;white-space:nowrap}
+.vsatk i{flex:1;height:5px;border-radius:5px;background:var(--line);overflow:hidden;margin-right:38px}
+.vsatk b{display:block;height:100%;background:var(--bad);transform-origin:left;transform:scaleX(0)}
+.vssay{position:absolute;right:8px;top:-14px;opacity:0;pointer-events:none;white-space:nowrap;background:#1D2340;color:#fff;font-family:"Mochiy Pop One","M PLUS Rounded 1c",sans-serif;font-size:13px;padding:5px 11px;border-radius:12px}
+.vssay.on{animation:vssay 1.6s ease-out}
+@keyframes vssay{0%{opacity:0;transform:translateY(6px) scale(.8)}12%{opacity:1;transform:none}80%{opacity:1}100%{opacity:0}}
+.vsdmg{position:absolute;right:46px;top:26px;opacity:0;pointer-events:none;font-family:var(--display);font-size:22px;color:#fff;-webkit-text-stroke:5px #FF5E7E;paint-order:stroke fill}
+.vsdmg.on{animation:vsdmg .8s ease-out}
+@keyframes vsdmg{0%{opacity:0;transform:translateY(8px) scale(.6)}20%{opacity:1;transform:translateY(-4px) scale(1.25)}100%{opacity:0;transform:translateY(-22px) scale(1)}}
+.vsface.hit{animation:vshit .4s}
+@keyframes vshit{25%{transform:translateX(-4px) rotate(-10deg);filter:brightness(1.6)}75%{transform:translateX(4px) rotate(8deg)}}
+body.vsmode #tbar,body.vsmode #sec{visibility:hidden}
+/* 結果画面：論点別の正解率 */
+.tagstats{display:none;background:var(--card);border:2px solid var(--line);border-radius:18px;padding:10px 16px;margin-bottom:12px}
+#result.vs .tagstats{display:block}
+.tagstats h2{font-size:15px;margin:2px 0 6px}
+.tagrow{display:flex;align-items:center;gap:10px;font-size:13px;padding:4px 0}
+.tagrow .tn{flex:none;width:120px}
+.tagrow i{flex:1;height:8px;border-radius:8px;background:var(--line);overflow:hidden}
+.tagrow i b{display:block;height:100%;background:var(--good)}
+.tagrow i b.weak{background:var(--bad)}
+.tagrow .tv{flex:none;width:58px;text-align:right;color:var(--sub)}
+/* 仕訳バトル：相手が増えたので一覧はスクロール */
+.vsbox{max-height:calc(100vh - 32px);display:flex;flex-direction:column}
+#vsList{overflow:auto;min-height:0;margin:0 -4px;padding:2px 4px 6px}
+.vsopp img{background:#fff}
+.vsopp.cleared{border-color:#F2B84B}
+/* 仕訳バトル：相手を大きく出す */
+.enemy{display:none;position:absolute;z-index:2;left:28%;top:-80px;width:118px;height:118px;margin-left:-59px;pointer-events:none}
+body.vsmode .enemy{display:block;animation:ebob 2.2s ease-in-out infinite}
+body.vsmode #botGame,body.vsmode #burst{display:none}
+@keyframes ebob{50%{transform:translateY(-6px)}}
+.enemy img{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 5px 0 rgba(29,35,64,.18))}
+.enemy.e-kacho img{border-radius:50%;object-fit:cover;border:5px solid #fff;background:#fff;width:96px;height:96px;margin:14px auto 0}
+.enemy.hit img{animation:ehit .45s}
+@keyframes ehit{20%{transform:translateX(-8px) rotate(-8deg);filter:brightness(1.8) drop-shadow(0 0 10px #fff)}50%{transform:translateX(7px) rotate(6deg)}80%{transform:translateX(-3px)}}
+.enemy.atk img{animation:eatk .5s cubic-bezier(.3,1.5,.5,1)}
+@keyframes eatk{40%{transform:translate(18px,22px) scale(1.3)}}
+.enemy.down img{animation:edown .9s ease-in forwards}
+@keyframes edown{30%{transform:scale(1.15) rotate(-10deg)}100%{transform:scale(.2) rotate(200deg);opacity:0}}
+@media (prefers-reduced-motion: reduce){body.vsmode .enemy,.enemy.hit img,.enemy.atk img,.enemy.down img{animation:none}}
+/* ===== 感想を送る ===== */
+.fbbtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:12px 0 0;padding:12px;border:2px dashed #F2B84B;border-radius:16px;background:#FFF4D6;color:#7A4A00;font-size:16px}
+.fbbtn small{font-size:11px;font-weight:700;opacity:.8}
+.fbbtn.done{border-style:solid;border-color:var(--line);background:var(--card);color:var(--sub);cursor:default}
+.fbpick{position:fixed;inset:0;z-index:31;background:rgba(18,22,42,.55);display:grid;place-items:center;padding:16px}
+.fbpick[hidden]{display:none}
+.fbbox{width:100%;max-width:400px;max-height:calc(100vh - 32px);overflow:auto;background:var(--card);border-radius:24px;padding:18px 16px 14px;box-shadow:0 8px 0 rgba(0,0,0,.2)}
+.fbbox h2{margin:0 0 4px;font-family:"Mochiy Pop One","M PLUS Rounded 1c",sans-serif;font-weight:400;font-size:19px;text-align:center}
+.fblead{margin:0 0 12px;font-size:12px;color:var(--sub);text-align:center}
+.fbq{margin-bottom:12px}
+.fbq b{display:block;font-size:14px;margin-bottom:6px}
+.fbq b small{font-weight:700;color:var(--sub)}
+.fbopts{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.fbopts button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:58px;padding:6px 2px;border:2px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font-size:22px;line-height:1.2}
+.fbopts button small{font-size:9.5px;font-weight:700;color:var(--sub);line-height:1.2;text-align:center;word-break:keep-all}
+.fbopts.txt button{font-size:11px;letter-spacing:-.04em;padding:6px 0;word-break:keep-all}
+.fbopts button[aria-pressed="true"]{border-color:var(--fire);background:#FFF0E2;box-shadow:0 2px 0 #F2B48F}
+.fbbox textarea{width:100%;font:inherit;font-size:15px;padding:10px 12px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink);resize:vertical}
+.fbbox textarea:focus{outline:none;border-color:var(--asset)}
+.fbbox input{width:100%;font:inherit;font-size:16px;padding:10px 12px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
+.fbbox input:focus{outline:none;border-color:var(--asset)}
+.fbbtns{display:grid;grid-template-columns:1fr 1.6fr;gap:10px}
+.fbbtns .btn-main{padding:14px}
+.fbbtns .btn-main:disabled{opacity:.45;cursor:default}
+.fbmsg{margin:8px 0 0;font-size:12px;color:var(--sub);text-align:center;min-height:1.2em}
 </style>
 <!-- アクセス数の計測（GoatCounter。Cookie は使わない） -->
 <script data-goatcounter="https://boki-game.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
@@ -557,6 +687,11 @@ body.fever .bot.sm svg,body.fever .bot.sm .kwrap{animation:dance .42s ease-in-ou
       <span class="txt"><span class="lv">ステップ2</span><h2>左右ジャッジ</h2><p>「現金が増えた」は借方か貸方か</p></span>
       <span class="best">ベスト<b id="best-lr">0</b></span>
     </button>
+    <button class="tile vs" id="vsTile" type="button">
+      <span class="ico vs">VS</span>
+      <span class="txt"><span class="lv">ステップ3</span><h2>仕訳バトル</h2><p>キャラとHPを削り合う仕訳の対戦</p></span>
+      <span class="best">戦績<b id="vsRec">0勝</b></span>
+    </button>
     <div class="nick">
       <label for="nick">ニックネーム（任意・本名は入れないでください）</label>
       <input id="nick" maxlength="12" placeholder="例：かもみーる" autocomplete="off">
@@ -582,6 +717,13 @@ body.fever .bot.sm svg,body.fever .bot.sm .kwrap{animation:dance .42s ease-in-ou
       <button class="snd mini" id="bgmGame" aria-label="BGMの切り替え">🎵</button>
       <button class="snd mini" id="sndGame" aria-label="サウンド切り替え">🔊</button>
     </div>
+    <div class="vsbar" id="vsbar">
+      <div class="vsrow me"><span class="vsn">あなた</span><i><b id="vsMeFill"></b></i><span class="vsc" id="vsMe">100</span></div>
+      <div class="vsrow opp"><img class="vsface" id="vsFace" alt=""><span class="vsn" id="vsOppName"></span><i><b id="vsOppFill"></b></i><span class="vsc" id="vsOpp">100</span></div>
+      <div class="vsatk"><span>攻撃まで</span><i><b id="vsAtk"></b></i></div>
+      <span class="vssay" id="vsSay"></span>
+      <span class="vsdmg" id="vsDmg"></span>
+    </div>
     <div class="stats">
       <div class="score" id="score">0<small>点</small></div>
       <span class="plus" id="plus"></span>
@@ -591,6 +733,7 @@ body.fever .bot.sm svg,body.fever .bot.sm .kwrap{animation:dance .42s ease-in-ou
     <div class="qcard" id="qcard">
       <span class="qstripe" aria-hidden="true"></span>
       <span class="bot sm" id="botGame" data-face="normal"></span>
+      <span class="enemy" id="enemy"><img id="enemyImg" alt=""></span>
       <span class="qlabel" id="qlabel">勘定科目</span>
       <div class="qtext" id="qtext" aria-live="polite"></div>
       <div class="burst" id="burst"></div>
@@ -616,6 +759,14 @@ body.fever .bot.sm svg,body.fever .bot.sm .kwrap{animation:dance .42s ease-in-ou
       <div class="col"><button class="ans chunky" data-c="dr">借方<small>← 左</small></button></div>
       <div class="col"><button class="ans chunky" data-c="cr">貸方<small>右 →</small></button></div>
     </div>
+    <div class="board jr" id="board-jr">
+      <div class="jrsel"><span class="lab">借方</span><b id="jrDr">？</b><span class="lab">貸方</span><b id="jrCr">？</b></div>
+      <div class="jrgrid">
+        <button class="jrk chunky" type="button"></button><button class="jrk chunky" type="button"></button>
+        <button class="jrk chunky" type="button"></button><button class="jrk chunky" type="button"></button>
+        <button class="jrk chunky" type="button"></button><button class="jrk chunky" type="button"></button>
+      </div>
+    </div>
     <div class="hint" id="hint"></div>
   </section>
 
@@ -629,6 +780,7 @@ body.fever .bot.sm svg,body.fever .bot.sm .kwrap{animation:dance .42s ease-in-ou
         <div class="rtitle" id="rtitle"></div>
         <div class="rnext" id="rnext"></div>
       </div>
+      <button class="fbbtn" id="fbOpen" type="button">📝 感想を送る<small>30秒で終わります</small></button>
       <div class="kacho" id="kacho"><img id="kachoImg" alt=""><div><b id="kachoTitle">経理課長の講評</b><p id="kachoTxt"></p></div></div>
       <div class="unlock" id="unlock"><img src="kacho/smile.jpg" alt="経理課長" loading="lazy"><div><b>新しい相棒「経理課長」が解放！</b>トップ画面で相棒を切り替えられます<br><button id="useKacho">課長を相棒にする</button></div></div>
       <div class="rstats">
@@ -636,12 +788,12 @@ body.fever .bot.sm svg,body.fever .bot.sm .kwrap{animation:dance .42s ease-in-ou
         <div class="rstat"><b id="rrate">0%</b>正答率</div>
         <div class="rstat"><b id="rmax">0</b>最大コンボ</div>
       </div>
-      <div id="momentWrap">
+      <div id="momentWrap" class="vshide">
         <h2 class="sech">最高コンボの瞬間</h2>
         <img class="moment" id="momentImg" alt="最高コンボを達成したときのゲーム画面">
       </div>
       <h2 class="sech">シェア用画像</h2>
-      <img class="shareimg" id="shareImg" alt="スコアと称号をまとめたシェア用画像">
+      <img class="shareimg" id="shareImg" alt="結果をまとめたシェア用画像">
       <p class="howto">画像を保存してから「Xでスコアをポスト」を押し、投稿画面で画像を添付してください。保存ボタンが使えない場合は、画像を長押しして保存できます。</p>
       <div class="share2">
         <button class="btn-ghost" id="saveImg">画像を保存</button>
@@ -652,11 +804,8 @@ body.fever .bot.sm svg,body.fever .bot.sm .kwrap{animation:dance .42s ease-in-ou
         <button class="btn-ghost copy" id="copy">コピー</button>
       </div>
       <div class="toast" id="toast"></div>
+      <div class="tagstats" id="tagstats"></div>
       <div class="misses" id="misses"></div>
-      <div class="feedback">
-        <p>試作版です。遊んだ感想や「ここ直して」を教えてください</p>
-        <a class="btn-ghost" id="feedback" href="https://twitter.com/intent/tweet?text=%40chamomile5674%20%E7%B0%BF%E8%A8%98%E3%82%B2%E3%83%BC%E3%83%A0%E3%81%AE%E6%84%9F%E6%83%B3%EF%BC%9A" target="_blank" rel="noopener">感想をXで送る</a>
-      </div>
     </div>
     <div class="rbtns">
       <button class="chunky btn-main" id="again">▶ もう一度</button>
@@ -671,6 +820,34 @@ body.fever .bot.sm svg,body.fever .bot.sm .kwrap{animation:dance .42s ease-in-ou
 <div class="count" id="count"><span id="countTxt"></span></div>
 <div class="last" id="last"><span id="lastTxt"></span></div>
 <div class="missfx" id="missfx"></div>
+<div class="fbpick" id="fbpick" hidden>
+  <div class="fbbox" role="dialog" aria-labelledby="fbTitle">
+    <h2 id="fbTitle">感想を聞かせてください</h2>
+    <p class="fblead">これからの改善に使います。30秒で終わります</p>
+    <div class="fbq"><b>① おもしろさ</b>
+      <div class="fbopts" id="fbFun">
+        <button type="button" data-v="1">😣<small>つまらない</small></button><button type="button" data-v="2">🙁<small>いまいち</small></button><button type="button" data-v="3">🙂<small>ふつう</small></button><button type="button" data-v="4">😊<small>楽しい</small></button><button type="button" data-v="5">🤩<small>とても<br>楽しい</small></button>
+      </div></div>
+    <div class="fbq"><b>② 難易度</b>
+      <div class="fbopts txt" id="fbDiff">
+        <button type="button" data-v="1">とても<br>かんたん</button><button type="button" data-v="2">かんたん</button><button type="button" data-v="3">ちょうど<br>いい</button><button type="button" data-v="4">むずかしい</button><button type="button" data-v="5">とても<br>むずかしい</button>
+      </div></div>
+    <div class="fbq"><b>③ 自由記入 <small>（任意）</small></b>
+      <textarea id="fbText" maxlength="300" rows="3" placeholder="要望・改善点・感想など（名前や連絡先は書かないでください）"></textarea></div>
+    <div class="fbq"><b>ニックネーム <small>（任意・本名は入れないでください）</small></b>
+      <input id="fbNick" maxlength="12" placeholder="例：かもみーる" autocomplete="off"></div>
+    <div class="fbbtns"><button class="btn-ghost" id="fbCancel" type="button">あとで</button><button class="chunky btn-main" id="fbSend" type="button" disabled>送る</button></div>
+    <p class="fbmsg" id="fbMsg"></p>
+  </div>
+</div>
+<div class="vspick" id="vspick" hidden>
+  <div class="vsbox">
+    <h2>対戦相手を選ぶ</h2>
+    <p class="vsrule">取引に合う「借方」→「貸方」の順にタップして攻撃！<br>相手のHPを0にしたら勝ち。相手の攻撃にも気をつけて</p>
+    <div id="vsList"></div>
+    <button class="btn-ghost" id="vsCancel" type="button">やめる</button>
+  </div>
+</div>
 <div class="sheet" id="sheet" aria-live="assertive">
   <div class="in"><div class="mark" id="smark"></div><img class="sface" id="sface" alt=""><div><p class="sline" id="sline"></p><h3 id="stitle"></h3><p id="sbody"></p><p class="snext">タップで次の問題へ</p></div></div>
 </div>
@@ -785,11 +962,136 @@ function buildLR(){
   return out;
 }
 
+// 仕訳バトルの問題のひな形：[取引文, 借方, 貸方, 論点, 解説, 金額の範囲（千円単位）]
+// {co} は会社名、{a} は金額に置き換える。日商簿記3級の1行で書ける仕訳
+const JR_CO=["東京商事","大阪物産","山田商店","北海道産業","横浜商会","名古屋工業","福岡商店","京都販売","千葉商店","神戸物産"];
+const JR_T=[
+  ["{co}から商品{a}円を仕入れ、代金は現金で支払った","仕入","現金","商品売買","仕入（費用）が増えて借方、現金が減って貸方。",[10,300]],
+  ["{co}から商品{a}円を仕入れ、代金は掛けとした","仕入","買掛金","商品売買","掛けで仕入れたら、後で払う義務の買掛金（負債）。",[10,300]],
+  ["{co}へ商品{a}円を売り上げ、代金は掛けとした","売掛金","売上","商品売買","掛けで売ったら、後で受け取る権利の売掛金（資産）。",[10,300]],
+  ["{co}へ商品{a}円を売り上げ、代金は現金で受け取った","現金","売上","商品売買","現金が増えて借方、売上（収益）が貸方。",[10,300]],
+  ["{co}へ商品{a}円を売り上げ、代金は同店振出の小切手で受け取った","現金","売上","商品売買","他人が振り出した小切手は現金として扱う。",[10,300]],
+  ["{co}から掛けで仕入れた商品のうち{a}円を品違いのため返品した","買掛金","仕入","商品売買","仕入の取消し。買掛金を減らし、仕入を貸方に。",[5,50]],
+  ["{co}へ掛けで売り上げた商品のうち{a}円が返品された","売上","売掛金","商品売買","売上の取消し。売上を借方に、売掛金を減らす。",[5,50]],
+  ["{co}へ商品{a}円を売り上げ、代金はクレジットカード払いとした（手数料は考えない）","クレジット売掛金","売上","商品売買","カード払いの代金はクレジット売掛金（資産）。",[10,300]],
+  ["{co}から商品の注文を受け、手付金{a}円を現金で受け取った","現金","前受金","商品売買","商品を渡す前に受け取ったお金は前受金（負債）。",[5,50]],
+  ["{co}へ商品を注文し、手付金{a}円を現金で支払った","前払金","現金","商品売買","商品を受け取る前に払ったお金は前払金（資産）。",[5,50]],
+  ["{co}へ商品を引き渡し、代金{a}円は受け取っていた手付金を全額充当した","前受金","売上","商品売買","渡す義務がなくなったので前受金を減らし、売上を計上。",[5,50]],
+  ["{co}から注文していた商品が届き、代金{a}円は支払っていた手付金を全額充当した","仕入","前払金","商品売買","受け取る権利を使ったので前払金を減らし、仕入を計上。",[5,50]],
+  ["{co}へ商品を発送し、当社負担の発送費{a}円を現金で支払った","発送費","現金","費用・収益","当社が負担する発送費は発送費（費用）。",[1,20]],
+  ["現金{a}円を普通預金口座に預け入れた","普通預金","現金","現金・預金","普通預金（資産）が増え、現金が減る。",[10,500]],
+  ["普通預金口座から現金{a}円を引き出した","現金","普通預金","現金・預金","現金が増え、普通預金が減る。",[10,300]],
+  ["{co}への買掛金{a}円を、小切手を振り出して支払った","買掛金","当座預金","現金・預金","自分で振り出した小切手は当座預金が減る。",[10,300]],
+  ["{co}への売掛金{a}円が当座預金口座に振り込まれた","当座預金","売掛金","現金・預金","売掛金が当座預金に変わる。",[10,300]],
+  ["現金の実際有高が帳簿残高より{a}円少なかった（原因は不明）","現金過不足","現金","現金・預金","帳簿の現金を実際に合わせて減らし、差額は現金過不足。",[1,9]],
+  ["現金の実際有高が帳簿残高より{a}円多かった（原因は不明）","現金","現金過不足","現金・預金","帳簿の現金を実際に合わせて増やし、差額は現金過不足。",[1,9]],
+  ["{co}への買掛金{a}円を、約束手形を振り出して支払った","買掛金","支払手形","手形・電子記録","手形で払う義務は支払手形（負債）。",[10,300]],
+  ["{co}への売掛金{a}円を、同店振出の約束手形で回収した","受取手形","売掛金","手形・電子記録","受け取った手形は受取手形（資産）。",[10,300]],
+  ["かねて受け取っていた約束手形{a}円が満期となり、当座預金口座に入金された","当座預金","受取手形","手形・電子記録","手形の代金を受け取ったので受取手形が減る。",[10,300]],
+  ["かねて振り出していた約束手形{a}円が満期となり、当座預金口座から支払われた","支払手形","当座預金","手形・電子記録","手形の代金を払ったので支払手形が減る。",[10,300]],
+  ["{co}への売掛金{a}円について、電子記録債権の発生記録が行われた","電子記録債権","売掛金","手形・電子記録","売掛金が電子記録債権（資産）に変わる。",[10,300]],
+  ["{co}への買掛金{a}円について、電子記録債務の発生記録が行われた","買掛金","電子記録債務","手形・電子記録","買掛金が電子記録債務（負債）に変わる。",[10,300]],
+  ["{co}への買掛金{a}円を現金で支払った","買掛金","現金","債権・債務","買掛金（負債）が減るので借方。",[10,300]],
+  ["{co}への売掛金{a}円を現金で回収した","現金","売掛金","債権・債務","売掛金（資産）が減るので貸方。",[10,300]],
+  ["事務用のパソコン{a}円を購入し、代金は月末に支払うことにした","備品","未払金","債権・債務","商品以外の後払いは、買掛金ではなく未払金。",[100,400]],
+  ["パソコン購入代金の未払分{a}円を現金で支払った","未払金","現金","債権・債務","未払金（負債）が減るので借方。",[100,400]],
+  ["不要になった土地を帳簿価額{a}円で売却し、代金は月末に受け取ることにした","未収入金","土地","債権・債務","商品以外を売った代金の後払いは、売掛金ではなく未収入金。",[500,3000]],
+  ["土地の売却代金の未収分{a}円を現金で受け取った","現金","未収入金","債権・債務","未収入金（資産）が減るので貸方。",[500,3000]],
+  ["{co}に現金{a}円を貸し付けた","貸付金","現金","債権・債務","貸したお金は返してもらう権利の貸付金（資産）。",[100,1000]],
+  ["得意先が倒産し、前期に発生した売掛金{a}円が貸し倒れた（貸倒引当金の残高は十分）","貸倒引当金","売掛金","債権・債務","前期の売掛金の貸倒れは、貸倒引当金を取り崩す。",[10,100]],
+  ["得意先が倒産し、当期に発生した売掛金{a}円が貸し倒れた","貸倒損失","売掛金","債権・債務","当期に発生した売掛金の貸倒れは貸倒損失（費用）。",[10,100]],
+  ["従業員の出張にあたり、旅費の概算額{a}円を現金で渡した","仮払金","現金","仮払・仮受","使い道や金額が確定していない支払いは仮払金（資産）。",[10,100]],
+  ["従業員が出張から戻り、仮払金{a}円の全額を旅費交通費として精算した","旅費交通費","仮払金","仮払・仮受","金額が確定したので、仮払金を旅費交通費に振り替える。",[10,100]],
+  ["内容不明の入金{a}円が普通預金口座にあった","普通預金","仮受金","仮払・仮受","理由が分からない入金は、いったん仮受金（負債）。",[10,200]],
+  ["かねての仮受金{a}円は、{co}への売掛金の回収と判明した","仮受金","売掛金","仮払・仮受","仮受金を減らし、売掛金を回収したことにする。",[10,200]],
+  ["給料から預かっていた源泉所得税{a}円を現金で納付した","預り金","現金","仮払・仮受","預かっていたお金を納めたので、預り金（負債）が減る。",[10,100]],
+  ["従業員が負担すべき保険料{a}円を現金で立て替えた","立替金","現金","仮払・仮受","後で返してもらう立替金（資産）。",[1,50]],
+  ["株式を発行し、払込金{a}円が普通預金口座に入金された（全額資本金とする）","普通預金","資本金","資本・借入","出資されたお金は資本金（純資産）。",[500,5000]],
+  ["銀行から{a}円を借り入れ、普通預金口座に入金された","普通預金","借入金","資本・借入","借りたお金は返す義務がある借入金（負債）。",[100,3000]],
+  ["借入金{a}円を普通預金口座から返済した（利息は考えない）","借入金","普通預金","資本・借入","借入金（負債）が減るので借方。",[100,3000]],
+  ["借入金の利息{a}円を現金で支払った","支払利息","現金","資本・借入","払った利息は支払利息（費用）。",[1,30]],
+  ["貸付金の利息{a}円を現金で受け取った","現金","受取利息","資本・借入","受け取った利息は受取利息（収益）。",[1,30]],
+  ["営業用の車両{a}円を購入し、代金は小切手を振り出して支払った","車両運搬具","当座預金","固定資産","営業用の車は車両運搬具（資産）。",[500,3000]],
+  ["店舗用の土地{a}円を購入し、代金は普通預金口座から支払った","土地","普通預金","固定資産","土地（資産）が増え、普通預金が減る。",[1000,8000]],
+  ["店舗の壁を塗り替え（修繕）、代金{a}円を現金で支払った","修繕費","現金","固定資産","元の状態に戻す修理は修繕費（費用）。",[10,200]],
+  ["事務所の家賃{a}円を普通預金口座から支払った","支払家賃","普通預金","費用・収益","家賃の支払いは支払家賃（費用）。",[50,300]],
+  ["電気代{a}円が普通預金口座から引き落とされた","水道光熱費","普通預金","費用・収益","電気・ガス・水道は水道光熱費（費用）。",[5,80]],
+  ["収入印紙{a}円を現金で購入した","租税公課","現金","費用・収益","収入印紙は税金の一種なので租税公課（費用）。",[1,20]],
+  ["郵便切手{a}円を現金で購入した","通信費","現金","費用・収益","切手は通信費（費用）。",[1,10]],
+  ["事務用の文房具{a}円を購入し、現金で支払った","消耗品費","現金","費用・収益","すぐ使う事務用品は消耗品費（費用）。",[1,20]],
+  ["従業員に給料{a}円を普通預金口座から支払った（源泉所得税などは考えない）","給料","普通預金","費用・収益","給料の支払いは給料（費用）。",[100,500]],
+  ["1年分の火災保険料{a}円を現金で支払った","保険料","現金","費用・収益","保険料の支払いは保険料（費用）。",[10,120]],
+  ["所有する建物を貸し、家賃{a}円を現金で受け取った","現金","受取家賃","費用・収益","受け取った家賃は受取家賃（収益）。",[50,300]],
+  ["決算にあたり、備品の減価償却費{a}円を計上した（間接法）","減価償却費","減価償却累計額","決算整理","間接法では、備品を直接減らさず減価償却累計額を使う。",[10,200]],
+  ["決算にあたり、売掛金に対して貸倒引当金{a}円を設定した（引当金の残高はゼロ）","貸倒引当金繰入","貸倒引当金","決算整理","引当金を設定するときは貸倒引当金繰入（費用）。",[1,30]],
+  ["決算にあたり、支払った保険料のうち{a}円は次期分なので前払いとした","前払保険料","保険料","決算整理","次期分は今期の費用から外し、前払保険料（資産）に。",[5,60]],
+  ["決算にあたり、当期分の借入金の利息{a}円が未払いとなっている","支払利息","未払利息","決算整理","今期の費用として計上し、払う義務の未払利息（負債）。",[1,30]],
+  ["決算にあたり、受け取った家賃のうち{a}円は次期分である","受取家賃","前受家賃","決算整理","次期分は今期の収益から外し、前受家賃（負債）に。",[10,100]],
+  ["決算にあたり、当座預金の残高がマイナス{a}円なので当座借越に振り替えた","当座預金","当座借越","決算整理","マイナスの当座預金は当座借越（負債）として表す。",[10,200]],
+  ["決算にあたり、原因不明の現金過不足（借方残高）{a}円を雑損とした","雑損","現金過不足","決算整理","原因が分からない不足は雑損（費用）。",[1,9]],
+  ["決算にあたり、期首商品棚卸高{a}円を仕入勘定に振り替えた","仕入","繰越商品","決算整理","売上原価を出すため、期首の在庫を仕入に加える。",[50,500]],
+  ["決算にあたり、期末商品棚卸高{a}円を繰越商品勘定に振り替えた","繰越商品","仕入","決算整理","売れ残った在庫は仕入から外し、繰越商品（資産）に。",[50,500]],
+  ["決算にあたり、未使用の郵便切手{a}円を貯蔵品に振り替えた","貯蔵品","通信費","決算整理","使っていない切手は通信費から外し、貯蔵品（資産）に。",[1,10]],
+  ["決算にあたり、法人税等{a}円を計上した（中間納付はない）","法人税等","未払法人税等","決算整理","まだ払っていない税金は未払法人税等（負債）。",[50,800]]
+];
+// まぎらわしい勘定科目（間違いのボタンに使う）
+const JR_CONF={現金:["当座預金","普通預金"],当座預金:["現金","普通預金","当座借越"],普通預金:["当座預金","現金"],売掛金:["未収入金","受取手形","買掛金"],未収入金:["売掛金","未払金"],
+  買掛金:["未払金","支払手形","売掛金"],未払金:["買掛金","未収入金"],前払金:["前受金","仮払金"],前受金:["前払金","仮受金"],仮払金:["仮受金","前払金","立替金"],仮受金:["仮払金","前受金"],
+  受取手形:["支払手形","売掛金"],支払手形:["受取手形","買掛金"],電子記録債権:["電子記録債務","受取手形"],電子記録債務:["電子記録債権","支払手形"],
+  借入金:["貸付金","未払金"],貸付金:["借入金","立替金"],仕入:["売上","繰越商品","買掛金"],売上:["仕入","売掛金","前受金"],受取利息:["支払利息"],支払利息:["受取利息","未払利息"],
+  預り金:["立替金","仮受金"],立替金:["預り金","仮払金"],資本金:["借入金","繰越利益剰余金"],貸倒引当金:["貸倒損失","貸倒引当金繰入"],貸倒損失:["貸倒引当金"],貸倒引当金繰入:["貸倒損失","貸倒引当金"],
+  減価償却費:["減価償却累計額","備品"],減価償却累計額:["減価償却費","備品"],現金過不足:["雑損","雑益"],雑損:["雑益","現金過不足"],備品:["消耗品費","車両運搬具"],消耗品費:["備品","貯蔵品"],
+  租税公課:["通信費","法人税等"],通信費:["租税公課","貯蔵品"],支払家賃:["受取家賃","前払家賃"],受取家賃:["支払家賃","前受家賃"],水道光熱費:["通信費"],保険料:["前払保険料"],前払保険料:["保険料","未払保険料"],
+  クレジット売掛金:["売掛金","未収入金"],旅費交通費:["仮払金"],土地:["建物"],修繕費:["建物"],給料:["預り金"],車両運搬具:["備品"],発送費:["立替金"],
+  未払利息:["前払利息","支払利息"],前受家賃:["未収家賃","受取家賃"],当座借越:["借入金","当座預金"],繰越商品:["仕入","売上"],貯蔵品:["消耗品費","通信費"],法人税等:["租税公課","未払法人税等"],未払法人税等:["未払金","法人税等"]};
+const JR_FILL=["現金","普通預金","当座預金","売掛金","買掛金","未払金","未収入金","仕入","売上","前払金","前受金","仮払金","仮受金","備品","消耗品費"];
+const JR_LABEL={};
+function buildJR(){
+  return JR_T.map(([t,d,c,tag,ex,rg],i)=>{
+    // 金額は千円単位。大きい金額は1万円単位にそろえて読みやすく
+    let a=(rg[0]+Math.floor(Math.random()*(rg[1]-rg[0]+1)))*1000; if(a>=100000) a=Math.round(a/10000)*10000;
+    const q=t.replace(/\{co\}/g,JR_CO[Math.floor(Math.random()*JR_CO.length)]).replace(/\{a\}/g,a.toLocaleString("ja-JP"));
+    const key="j"+i; TAGCOL[key]="var(--asset)"; JR_LABEL[key]="借方 "+d+"／貸方 "+c;
+    return {key,main:q,sub:"",q,plain:q,ans:key,ex,dr:d,cr:c,tag};
+  });
+}
+// 6つの勘定科目ボタン：正解の借方・貸方と、まぎらわしい科目
+function jrKeys(it){
+  const set=new Set([it.dr,it.cr]);
+  shuffle([...(JR_CONF[it.dr]||[]),...(JR_CONF[it.cr]||[])]).forEach(x=>{ if(set.size<6) set.add(x); });
+  shuffle(JR_FILL.slice()).forEach(x=>{ if(set.size<6) set.add(x); });
+  return shuffle([...set]);
+}
+let jrPick=null;
+function jrSel(){
+  $("jrDr").textContent=jrPick||"？"; $("jrDr").classList.toggle("set",!!jrPick);
+  $("jrCr").textContent="？"; $("jrCr").classList.remove("set");
+}
+// 1回目のタップで借方、2回目で貸方。同じボタンをもう一度押すと借方を取り消す
+function jrTap(b){
+  if(missTimer){ skipMiss(); return; }
+  if(locked||!cur||ended||mode!=="jr") return;
+  const k=b.dataset.k;
+  if(!jrPick){ jrPick=k; b.classList.add("dr"); jrSel(); SFX.tick(); return; }
+  if(jrPick===k){ jrPick=null; b.classList.remove("dr"); jrSel(); return; }
+  $("jrCr").textContent=k; $("jrCr").classList.add("set");
+  answer(jrPick===cur.dr&&k===cur.cr?cur.ans:"x");
+}
 const MODES = {
   sort:{title:"5要素ジャッジ",label:"勘定科目",board:"board-sort",hint:"",tut:"資産・費用は左の借方グループ、負債・純資産・収益は右の貸方グループ",
     items:()=>ACCOUNTS.map(([n,c,h])=>({key:n,main:n,sub:"",q:n,plain:n,ans:c,ex:h})),
     okText:it=>it.plain+"は"+CAT[it.ans]+"です。",
     name:a=>CAT[a]},
+  jr:{title:"仕訳バトル",label:"取引",board:"board-jr",hint:"借方 → 貸方 の順にタップ",
+    items:()=>buildJR().filter(it=>!vs||!vs.opp.tags||vs.opp.tags.includes(it.tag)),
+    okText:it=>JR_LABEL[it.ans],
+    name:a=>JR_LABEL[a]||"",
+    // 問題ごとに、6つの勘定科目ボタンを並べ直す
+    render:it=>{
+      const ks=jrKeys(it); jrPick=null;
+      document.querySelectorAll("#board-jr .jrk").forEach((b,i)=>{ b.textContent=ks[i]; b.dataset.k=ks[i]; b.classList.remove("dr"); });
+      jrSel();
+    }},
   lr:{title:"左右ジャッジ",label:"取引の要素",board:"board-lr",hint:"カードを左右にスワイプしてもOK",tut:"資産・費用が増えたら借方（左）、負債・純資産・収益が増えたら貸方（右）。減ったら逆",
     items:buildLR,
     okText:it=>it.plain+" → "+SIDE[it.ans],
@@ -820,6 +1122,7 @@ let fever=false,feverUntil=0,feverCount=0,soundOn=store.get("sound",true),actx=n
 function dayStr(o=0){const d=new Date();d.setDate(d.getDate()+o);return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()}
 function refreshMenu(){
   renderRank();
+  if($("vsRec")) $("vsRec").textContent=Object.keys(OPP).reduce((a,k)=>a+vsRecord(k).w,0)+"勝";
   $("best-sort").textContent=store.get("best_sort",0);
   if($("best-lr")) $("best-lr").textContent=store.get("best_lr",0);
   const s=store.get("streak",{last:null,count:0});
@@ -869,13 +1172,156 @@ function next(){
   if(ended) return;
   if(deck.length===0) deck=shuffle(pool.slice());
   cur=deck.pop();
+  if(M.render) M.render(cur);
+  $("qtext").classList.toggle("jr",mode==="jr");
   $("qtext").innerHTML=cur.q; $("qtext").style.visibility=""; restart($("qtext"),"qpop");
   // 長い勘定科目は2行になりロボに触れるので、文字を少し小さくする
-  $("qtext").classList.toggle("long",(cur.main||"").length>=9);
+  $("qtext").classList.toggle("long",mode!=="jr"&&(cur.main||"").length>=9);
   $("qcard").classList.remove("flyL","flyR","shake");
   hideSheet();
   locked=false;
 }
+
+// ===== 仕訳バトル（キャラとHPを削り合う） =====
+// 相手の強さ：攻撃ゲージがたまる時間(ms)と、攻撃のダメージ。本気の課長は、経理課長に1回勝つと選べる
+const OPP={
+  chick:{name:"ひよこ電卓",lv:1,kind:"mon",hp:40,atk:12000,dmg:5,tags:["費用・収益"],say:["ピヨッ","けいさんちゅう…","ピヨピヨ〜"]},
+  coin:{name:"1円玉の精",lv:2,kind:"mon",hp:50,atk:11000,dmg:6,tags:["現金・預金"],say:["チャリン！","1円を笑うな〜","数え直して！"]},
+  receipt:{name:"レシートの精",lv:3,kind:"mon",hp:60,atk:10000,dmg:8,tags:["費用・収益"],say:["ペラッ","レシート捨てないで〜","カサカサッ"]},
+  slip:{name:"さまよう伝票",lv:4,kind:"mon",hp:70,atk:9000,dmg:10,tags:["商品売買"],say:["どこに書くの？","起票して〜","ヒラヒラ〜"]},
+  kassy:{name:"かっしー",lv:5,kind:"kassy",hp:80,atk:8000,dmg:10,say:["えいっ！","ピピッ、攻撃！","まだまだ！"]},
+  tanuki:{name:"仮払いタヌキ",lv:6,kind:"mon",hp:85,atk:7500,dmg:11,tags:["仮払・仮受"],say:["精算はまだポン","とりあえず仮払いポン","化かしちゃうポン"]},
+  ghost:{name:"未払いゴースト",lv:7,kind:"mon",hp:90,atk:7000,dmg:12,tags:["債権・債務","仮払・仮受"],say:["払って〜","うらめしや〜","まだ払ってないよ…"]},
+  dragon:{name:"手形ドラゴン",lv:8,kind:"mon",hp:100,atk:6500,dmg:14,tags:["手形・電子記録","現金・預金"],say:["期日が来たぞ！","ガオー！","不渡りにするぞ！"]},
+  golem:{name:"固定資産ゴーレム",lv:9,kind:"mon",hp:105,atk:6200,dmg:14,tags:["固定資産","資本・借入"],say:["ゴゴゴ…","減価償却されないぞ","重いぞ〜"]},
+  kacho:{name:"経理課長",lv:10,kind:"kacho",hp:100,atk:6000,dmg:15,say:["根拠は？","遅いわよ","手が止まってるわ"]},
+  storm:{name:"決算の嵐",lv:11,kind:"mon",hp:110,atk:5500,dmg:16,tags:["決算整理"],say:["決算だぞ〜！","ゴロゴロ…","整理が終わらない！"]},
+  deadline:{name:"締め切りの鬼",lv:12,kind:"mon",hp:120,atk:5000,dmg:18,say:["締め切りだ！","まだ終わらんのか！","残業だ〜！"]},
+  oni:{name:"本気の課長",lv:13,kind:"kacho",hp:130,atk:4500,dmg:20,say:["締め切りは待たないわ","その仕訳、通らないわ","遅い！"]},
+  audit:{name:"税務調査の影",lv:14,kind:"mon",hp:150,atk:4000,dmg:22,say:["この領収書は？","証拠を見せなさい","全部調べますよ"]},
+  legend:{name:"伝説の会計士",lv:15,kind:"mon",hp:180,atk:3500,dmg:24,say:["甘い！","仕訳は一瞬で決まる","わしについてこれるか？"]}};
+// 対戦後の相手のひと言（あなたが勝った／負けた）と表情
+const OPP_LINES={
+  chick:{win:["sad","ピヨ…けいさん、まけた…"],lose:["happy","ピヨピヨ！もう一回ピヨ"]},
+  coin:{win:["sad","1円の重み、わかってくれたね…"],lose:["happy","1円単位で合わせてね〜"]},
+  receipt:{win:["sad","うう…ちゃんと経費にしてね"],lose:["happy","ペラペラ〜♪ もう一回どうぞ"]},
+  slip:{win:["sad","正しく起票されちゃった…"],lose:["happy","迷子のままでいられたよ〜"]},
+  kassy:{win:["sad","くやしい〜！次は負けないよ！"],lose:["excited","やったー！ぼくの勝ち！"]},
+  tanuki:{win:["sad","精算されちゃったポン…"],lose:["happy","まだまだ仮払いのままポン"]},
+  ghost:{win:["sad","払ってもらえて成仏します…"],lose:["happy","うらめしや〜、まだ未払いだよ〜"]},
+  dragon:{win:["sad","手形、無事に決済されたか…"],lose:["happy","ガオー！期日まで待てんぞ！"]},
+  golem:{win:["sad","ゴゴ…きちんと計上された…"],lose:["happy","ゴゴゴ…まだまだ動かんぞ"]},
+  kacho:{win:["troubled","……やるわね。次は本気を出すわ"],lose:["smile","まだまだね。出直してきなさい"]},
+  storm:{win:["sad","決算整理、終わっちゃった…"],lose:["happy","ゴロゴロ…決算はまだ終わらないぞ"]},
+  deadline:{win:["sad","締め切りに間に合っただと…！"],lose:["happy","残業決定だ〜！"]},
+  oni:{win:["surprise","嘘でしょ…私が負けるなんて"],lose:["grin","本気の私に勝つには、10年早いわ"]},
+  audit:{win:["sad","……帳簿、きれいですね。問題なしです"],lose:["happy","追加で資料をお願いします"]},
+  legend:{win:["sad","見事じゃ…伝説はお主に譲ろう"],lose:["happy","ほっほっ、まだまだ修行が足りんのう"]}};
+// 最初に選べるのはLv1だけ。Lv2以降は、1つ前の相手に勝つと選べる
+const OPP_KEYS=Object.keys(OPP);
+const oppOpen=k=>{ const i=OPP_KEYS.indexOf(k); return i<1||vsRecord(OPP_KEYS[i-1]).w>0; };
+// 敵キャラの絵（簿記にちなんだシンプルな形）。face が sad なら困り顔、happy/excited なら笑顔
+function monSVG(k,face){
+  const sad=face==="sad", joy=face==="happy"||face==="excited";
+  const eyes=(x1,x2,y)=>sad?'<path d="M'+(x1-5)+' '+(y-2)+' L'+(x1+5)+' '+(y+2)+'M'+(x2+5)+' '+(y-2)+' L'+(x2-5)+' '+(y+2)+'" stroke="#1D2340" stroke-width="3" stroke-linecap="round"/>'
+    :joy?'<path d="M'+(x1-5)+' '+(y+2)+' Q'+x1+' '+(y-5)+' '+(x1+5)+' '+(y+2)+'M'+(x2-5)+' '+(y+2)+' Q'+x2+' '+(y-5)+' '+(x2+5)+' '+(y+2)+'" fill="none" stroke="#1D2340" stroke-width="3" stroke-linecap="round"/>'
+    :'<circle cx="'+x1+'" cy="'+y+'" r="4" fill="#1D2340"/><circle cx="'+x2+'" cy="'+y+'" r="4" fill="#1D2340"/>';
+  const mouth=(x,y)=>sad?'<path d="M'+(x-7)+' '+(y+4)+' Q'+x+' '+(y-3)+' '+(x+7)+' '+(y+4)+'" fill="none" stroke="#1D2340" stroke-width="3" stroke-linecap="round"/>'
+    :'<path d="M'+(x-7)+' '+y+' Q'+x+' '+(y+(joy?9:6))+' '+(x+7)+' '+y+'" fill="'+(joy?'#1D2340':'none')+'" stroke="#1D2340" stroke-width="3" stroke-linecap="round"/>';
+  const body={
+    receipt:'<path d="M26 10 H74 V86 L68 92 L62 86 L56 92 L50 86 L44 92 L38 86 L32 92 L26 86 Z" fill="#FFFFFF" stroke="#C5CBDB" stroke-width="3"/><path d="M34 64 H66 M34 72 H58" stroke="#C5CBDB" stroke-width="3"/>'+eyes(40,60,36)+mouth(50,48),
+    slip:'<g transform="rotate(-8 50 50)"><rect x="20" y="16" width="60" height="70" rx="6" fill="#FFF6C8" stroke="#E0B84A" stroke-width="3"/><rect x="20" y="16" width="60" height="14" rx="6" fill="#F2A20C"/><path d="M30 70 H70" stroke="#E0B84A" stroke-width="3"/>'+eyes(38,62,46)+mouth(50,58)+'</g>',
+    ghost:'<path d="M20 50 Q20 14 50 14 Q80 14 80 50 V88 L70 80 L60 88 L50 80 L40 88 L30 80 L20 88 Z" fill="#B9A2F0" stroke="#8B47D6" stroke-width="3"/><text x="50" y="78" text-anchor="middle" font-size="14" font-weight="900" fill="#8B47D6" font-family="sans-serif">未</text>'+eyes(40,60,44)+mouth(50,56),
+    dragon:'<path d="M28 30 L22 10 L38 24 M72 30 L78 10 L62 24" fill="#7BC96F" stroke="#3E8E41" stroke-width="3" stroke-linejoin="round"/><circle cx="50" cy="52" r="34" fill="#7BC96F" stroke="#3E8E41" stroke-width="3"/><ellipse cx="50" cy="68" rx="18" ry="11" fill="#B9E6A5"/><circle cx="44" cy="68" r="2.5" fill="#3E8E41"/><circle cx="56" cy="68" r="2.5" fill="#3E8E41"/>'+eyes(38,62,46),
+    storm:'<path d="M44 74 L36 96 L52 80 L46 80 L54 66 Z" fill="#FFD43B" stroke="#E0A800" stroke-width="2"/><path d="M24 70 Q10 70 12 56 Q14 44 28 46 Q30 26 50 26 Q70 26 72 44 Q88 42 88 58 Q88 70 74 70 Z" fill="#8F9BB3" stroke="#5B6782" stroke-width="3"/>'+eyes(40,60,50)+mouth(50,60),
+    chick:'<path d="M50 12 Q46 4 42 8 M50 12 Q54 4 58 8" fill="none" stroke="#E0A800" stroke-width="3" stroke-linecap="round"/><ellipse cx="50" cy="56" rx="34" ry="36" fill="#FFE26B" stroke="#E0A800" stroke-width="3"/><rect x="30" y="58" width="40" height="24" rx="5" fill="#fff" stroke="#E0A800" stroke-width="2"/><path d="M36 66 H44 M48 66 H56 M60 66 H64 M36 74 H44 M48 74 H56 M60 74 H64" stroke="#C5CBDB" stroke-width="3" stroke-linecap="round"/><path d="M45 47 L50 52 L55 47 Z" fill="#FF8A3D"/>'+eyes(40,60,40),
+    coin:'<circle cx="50" cy="52" r="38" fill="#E6EAF2" stroke="#9AA2C0" stroke-width="4"/><circle cx="50" cy="52" r="30" fill="none" stroke="#C5CBDB" stroke-width="2"/><text x="50" y="82" text-anchor="middle" font-size="16" font-weight="900" fill="#9AA2C0" font-family="sans-serif">1円</text>'+eyes(38,62,44)+mouth(50,56),
+    tanuki:'<path d="M24 30 L28 12 L42 24 M76 30 L72 12 L58 24" fill="#A47148" stroke="#6E4A2C" stroke-width="3" stroke-linejoin="round"/><circle cx="50" cy="54" r="36" fill="#A47148" stroke="#6E4A2C" stroke-width="3"/><ellipse cx="38" cy="48" rx="11" ry="9" fill="#5C3D24"/><ellipse cx="62" cy="48" rx="11" ry="9" fill="#5C3D24"/><ellipse cx="50" cy="68" rx="16" ry="12" fill="#F1DCC2"/><circle cx="50" cy="62" r="4" fill="#3B2615"/><path d="M60 16 Q70 4 80 14 Q70 18 66 26 Z" fill="#6CC04A" stroke="#3E8E41" stroke-width="2"/>'+eyes(38,62,48).replace(/#1D2340/g,"#fff")+mouth(50,72),
+    golem:'<rect x="18" y="18" width="64" height="70" rx="10" fill="#A9AFBF" stroke="#6B7290" stroke-width="3"/><path d="M18 46 H40 M60 46 H82 M34 18 V30 M66 76 V88" stroke="#6B7290" stroke-width="2.5"/><rect x="38" y="62" width="24" height="18" rx="3" fill="#8A91A6"/><text x="50" y="76" text-anchor="middle" font-size="13" font-weight="900" fill="#fff" font-family="sans-serif">固</text>'+eyes(38,62,40).replace(/#1D2340/g,"#FFD43B")+mouth(50,52),
+    audit:'<path d="M16 92 Q16 30 50 14 Q84 30 84 92 Z" fill="#3B3A5C" stroke="#1D2340" stroke-width="3"/><ellipse cx="50" cy="54" rx="24" ry="26" fill="#2A2944"/><circle cx="40" cy="50" r="9" fill="none" stroke="#C5CBDB" stroke-width="3"/><circle cx="60" cy="50" r="9" fill="none" stroke="#C5CBDB" stroke-width="3"/><path d="M49 50 H51" stroke="#C5CBDB" stroke-width="3"/>'+eyes(40,60,50).replace(/#1D2340/g,"#FFD43B")+'<rect x="56" y="70" width="22" height="16" rx="2" fill="#fff" stroke="#9AA2C0" stroke-width="2"/><path d="M60 76 H74 M60 81 H70" stroke="#9AA2C0" stroke-width="2"/>',
+    legend:'<path d="M30 26 L36 8 L44 22 L50 6 L56 22 L64 8 L70 26 Z" fill="#FFD43B" stroke="#C99A1E" stroke-width="3" stroke-linejoin="round"/><circle cx="50" cy="50" r="28" fill="#FFE3C8" stroke="#C9956A" stroke-width="3"/><path d="M24 54 Q26 90 50 94 Q74 90 76 54 Q66 70 50 66 Q34 70 24 54 Z" fill="#fff" stroke="#C5CBDB" stroke-width="3"/><circle cx="40" cy="46" r="8" fill="none" stroke="#1D2340" stroke-width="2.5"/><circle cx="60" cy="46" r="8" fill="none" stroke="#1D2340" stroke-width="2.5"/><path d="M48 46 H52" stroke="#1D2340" stroke-width="2.5"/>'+eyes(40,60,46),
+    deadline:'<path d="M30 26 L24 6 L40 20 M70 26 L76 6 L60 20" fill="#FFE08A" stroke="#C99A1E" stroke-width="3" stroke-linejoin="round"/><circle cx="50" cy="54" r="36" fill="#F2575F" stroke="#B5323A" stroke-width="3"/><circle cx="50" cy="72" r="11" fill="#fff" stroke="#B5323A" stroke-width="2"/><path d="M50 72 V65 M50 72 H56" stroke="#1D2340" stroke-width="2.5" stroke-linecap="round"/>'+eyes(38,62,46)
+  }[k]||"";
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">'+body+'</svg>';
+}
+const VS_HP=100;
+let vs=null;
+const vsRecord=k=>store.get("vsrec_"+k,{w:0,l:0,d:0});
+const oppKey=o=>OPP_KEYS.find(k=>OPP[k]===o);
+const oppImg=(o,face)=>o.kind==="kacho"?KACHO+face+".jpg":"data:image/svg+xml;charset=utf-8,"+encodeURIComponent(o.kind==="mon"?monSVG(oppKey(o),face):botSVG(BOT_FACES[face]?face:"normal"));
+// 相手の最初の顔
+const oppFace0=(o,k)=>o.kind==="kacho"?(k==="oni"?"angry":"serious"):"normal";
+// 相手の強さの表示（Lvの色）
+const lvClass=lv=>lv<=5?"l1":lv<=10?"l2":"l3";
+function vsOpen(){
+  const list=$("vsList"); list.innerHTML="";
+  Object.keys(OPP).forEach(k=>{
+    const o=OPP[k], r=vsRecord(k), locked=!oppOpen(k), prev=OPP[OPP_KEYS[OPP_KEYS.indexOf(k)-1]];
+    const b=document.createElement("button"); b.type="button"; b.className="vsopp"+(locked?" locked":"")+(r.w?" cleared":"");
+    b.innerHTML='<img alt=""><span class="t"><b></b><small></small></span><span class="lv '+lvClass(o.lv)+'"></span>';
+    const im=b.querySelector("img"); im.src=oppImg(o,o.kind==="kacho"?oppFace0(o,k):"happy"); im.classList.toggle("robot",o.kind!=="kacho");
+    b.querySelector("b").textContent=(locked?"🔒 ":r.w?"👑 ":"")+o.name;
+    b.querySelector("small").textContent=locked?prev.name+"に勝つと挑戦できます":(o.tags?o.tags.join("、")+"だけ":"全部の論点")+"　"+r.w+"勝"+r.l+"敗";
+    b.querySelector(".lv").textContent="Lv."+o.lv;
+    if(!locked) b.addEventListener("click",()=>{ $("vspick").hidden=true; startVs(k); });
+    list.appendChild(b);
+  });
+  $("vspick").hidden=false;
+}
+function startVs(k){
+  vs={key:k,opp:OPP[k]};
+  const o=vs.opp;
+  $("vsOppName").textContent=o.name; $("vsFace").src=oppImg(o,oppFace0(o,k)); $("vsFace").classList.toggle("robot",o.kind==="kassy");
+  start("jr"); track("start-vs-"+k);
+}
+// 大きく出す相手の表情（normal・hurt・atk）
+let enemyTimer=null;
+function enemyFace(mood,ms){
+  if(!vs) return;
+  const o=vs.opp, k=vs.key;
+  const f={kacho:{normal:oppFace0(o,k),hurt:"troubled",atk:"grin"},kassy:{normal:"normal",hurt:"sad",atk:"excited"},mon:{normal:"normal",hurt:"sad",atk:"happy"}}[o.kind][mood];
+  $("enemyImg").src=oppImg(o,f);
+  clearTimeout(enemyTimer); if(ms) enemyTimer=setTimeout(()=>{ if(vs&&!(vs.ohp<=0)) enemyFace("normal"); },ms);
+}
+function vsReset(){ $("enemy").className="enemy e-"+vs.opp.kind; enemyFace("normal"); vs.hp=VS_HP; vs.ohp=vs.opp.hp; vs.gauge=0; vs.tags={}; vs.res=null; vsRender(); }
+function vsRender(){
+  if(!vs) return;
+  $("vsMe").textContent=vs.hp; $("vsOpp").textContent=vs.ohp;
+  $("vsMeFill").style.transform="scaleX("+vs.hp/VS_HP+")"; $("vsMeFill").classList.toggle("low",vs.hp<=30);
+  $("vsOppFill").style.transform="scaleX("+vs.ohp/vs.opp.hp+")";
+  $("vsAtk").style.transform="scaleX("+Math.min(1,vs.gauge)+")";
+}
+// 正解：相手にダメージ（コンボで上乗せ、フィーバーで2倍）
+function vsHit(){
+  const dmg=(10+Math.min(combo-1,5)*2)*(fever?2:1);
+  vs.ohp=Math.max(0,vs.ohp-dmg); vsRender();
+  const d=$("vsDmg"); d.textContent="-"+dmg; restart(d,"on"); restart($("vsFace"),"hit");
+  const en=$("enemy"); en.classList.remove("atk"); restart(en,"hit"); enemyFace("hurt",650);
+  if(vs.ohp<=0){ en.classList.remove("hit"); en.classList.add("down"); setTimeout(()=>{ if(!ended) finish(); },700); }
+}
+// 自分がダメージを受ける（間違えたとき・相手の攻撃）
+function vsHurt(d){
+  vs.hp=Math.max(0,vs.hp-d); vsRender(); restart($("missfx"),"on");
+  if(navigator.vibrate) try{navigator.vibrate(40)}catch(e){}
+  if(vs.hp<=0) setTimeout(()=>{ if(!ended) finish(); },250);
+}
+// 相手の攻撃ゲージ：時間でたまり、満タンで攻撃
+function vsLoopStart(){
+  vsStop();
+  vs.loop=setInterval(()=>{
+    if(!vs||ended||!cur) return;
+    vs.gauge+=100/vs.opp.atk;
+    if(vs.gauge>=1){
+      vs.gauge=0;
+      const sy=$("vsSay"); sy.textContent=vs.opp.say[Math.floor(Math.random()*vs.opp.say.length)]; restart(sy,"on");
+      restart($("vsFace"),"hop"); tone(150,.3,"square",.09,0,90);
+      const en=$("enemy"); en.classList.remove("hit"); restart(en,"atk"); enemyFace("atk",700);
+      vsHurt(vs.opp.dmg);
+    }
+    vsRender();
+  },100);
+}
+function vsStop(){ if(vs) clearInterval(vs.loop); }
 
 // 3・2・1・スタート！の間隔(ms)
 const CD_STEP=550;
@@ -884,7 +1330,8 @@ function clearCountdown(){ cdTimers.forEach(clearTimeout); cdTimers=[]; $("count
 function start(m){
   mode=m;M=MODES[m];pool=M.items();
   score=0;combo=0;maxCombo=0;correct=0;total=0;misses=[];ended=false;
-  endFever();feverCount=0;snap=null;hush();bgmStop();audio();loadVoices();
+  endFever();feverCount=0;snap=null;hush();bgmStop();vsStop();audio();loadVoices();
+  document.body.classList.toggle("vsmode",!!vs); if(vs) vsReset();
   deck=shuffle(pool.slice());
   $("qlabel").textContent=M.label;
   // 初めての2回だけ、ボタンの意味を1行で出す
@@ -907,8 +1354,9 @@ function start(m){
   const vd=bufFor("start")?bufFor("start").duration*1000:1300;
   cdTimers.push(setTimeout(()=>say("start"),Math.max(0,3*CD_STEP-(vd-600))));
   cdTimers.push(setTimeout(()=>{
-    $("count").classList.remove("on"); next(); bgmStart();
-    endAt=Date.now()+DURATION*1000; timer=setInterval(tick,100); tick();
+    $("count").classList.remove("on"); next(); bgmStart(); if(vs) vsLoopStart();
+    // 仕訳バトルは時間制限なし（HPで決着）
+    endAt=Date.now()+(vs?600:DURATION)*1000; timer=setInterval(tick,100); tick();
   },3*CD_STEP+300));
 }
 // 残り10秒の状態と、最後に表示した秒数
@@ -956,6 +1404,7 @@ function answer(c){
   if(missTimer){ skipMiss(); return; }
   if(locked||!cur||ended) return;
   total++;
+  if(vs&&cur.tag){ const tg=vs.tags[cur.tag]||(vs.tags[cur.tag]={c:0,n:0}); tg.n++; if(c===cur.ans) tg.c++; }
   const card=$("qcard");
   const btn=document.querySelector("#"+M.board+' .ans[data-c="'+c+'"]');
   if(btn){ btn.classList.remove("boing"); restart(btn,"squish"); }
@@ -971,11 +1420,13 @@ function answer(c){
     restart(card,"ok");
     $("plus").textContent="+"+gain; restart($("plus"),"on"); flyGain(btn,gain);
     locked=true; setTimeout(next,260);
+    if(vs) vsHit();
   }else{
     if(combo>=3){ $("cend").textContent=combo+"コンボでストップ"; restart($("cend"),"on"); }
     missKey=combo>=5?"miss2":["miss1","miss2","miss3"][Math.floor(Math.random()*3)];
     say(missKey);
     lostCombo=combo;combo=0;endFever();SFX.ng(); restart($("missfx"),"on");
+    if(vs) vsHurt(10);
     botFace(lostCombo>=5?"angry":"sad",1500); botHop("shiver");
     if(!misses.find(m=>m.key===cur.key)) misses.push(cur);
     restart(card,"shake");
@@ -1397,11 +1848,11 @@ function drawMoment(ctx,x,y,w,h,s,mk,bot){
   if(s&&s.sub){ctx.fillStyle="#6B7290";fit(ctx,s.sub,"800",F.r,17*k,iw-2*P-28*k);ctx.fillText(s.sub,ix+iw/2,cy+102*k)}
   if(fv){const ft="フィーバー 得点×2";ctx.font="400 "+(12*k)+"px "+F.p;const fw=ctx.measureText(ft).width+22*k;
     const g=ctx.createLinearGradient(ix+iw/2-fw/2,0,ix+iw/2+fw/2,0);g.addColorStop(0,"#FF5E7E");g.addColorStop(1,"#FFB020");
-    rr(ctx,ix+iw/2-fw/2,cy+qh-32*k,fw,22*k,11*k);ctx.fillStyle=g;ctx.fill();ctx.fillStyle="#fff";ctx.fillText(ft,ix+iw/2,cy+qh-21*k)}
+    const fx=ix+iw-P-12*k-fw;rr(ctx,fx,cy+12*k,fw,22*k,11*k);ctx.fillStyle=g;ctx.fill();ctx.fillStyle="#fff";ctx.fillText(ft,fx+fw/2,cy+23*k)}
   if(bot) drawBot(ctx,bot,ix+P+(iw-2*P)*.28-45*k,cardTop-60*k,90*k,99*k);
   cy+=qh+26*k;
   const bw=(iw-2*P-12*k)/2,lh=iy+ih-cy-22*k;
-  const btn=(bx,by,w2,h2,col,sh,label)=>{rr(ctx,bx,by+5*k,w2,h2,14*k);ctx.fillStyle=sh;ctx.fill();rr(ctx,bx,by,w2,h2,14*k);ctx.fillStyle=col;ctx.fill();ctx.fillStyle="#fff";fit(ctx,label,"800",F.r,(mk==="lr"?26:18)*k,w2-8*k);ctx.fillText(label,bx+w2/2,by+h2/2)};
+  const btn=(bx,by,w2,h2,col,sh,label)=>{rr(ctx,bx,by+5*k,w2,h2,14*k);ctx.fillStyle=sh;ctx.fill();rr(ctx,bx,by,w2,h2,14*k);ctx.fillStyle=col;ctx.fill();const gl=ctx.createLinearGradient(0,by,0,by+28*k);gl.addColorStop(0,"rgba(255,255,255,.32)");gl.addColorStop(1,"rgba(255,255,255,0)");rr(ctx,bx+8*k,by+6*k,w2-16*k,Math.min(h2*.34,28*k),10*k);ctx.fillStyle=gl;ctx.fill();ctx.fillStyle="#fff";fit(ctx,label,"800",F.r,(mk==="lr"?26:18)*k,w2-8*k);ctx.fillText(label,bx+w2/2,by+h2/2)};
   if(mk==="lr"){btn(ix+P,cy,bw,lh,"#1E7FE0","#1561AD","借方");btn(ix+P+bw+12*k,cy,bw,lh,"#F07A2B","#BF5A17","貸方")}
   else{const gp=10*k,a=(lh-gp)*.615,rh=(lh-2*gp)/3,rx=ix+P+bw+12*k;
     btn(ix+P,cy,bw,a,"#1E7FE0","#1561AD","資産");btn(ix+P,cy+a+gp,bw,lh-a-gp,"#EE4D5F","#BA3243","費用");
@@ -1418,29 +1869,60 @@ function drawMoment(ctx,x,y,w,h,s,mk,bot){
   ctx.restore();ctx.restore();
 }
 
+// 画像の背景：グラデーションと、中心から広がる光の帯
+function popBg(ctx,W,H,cols,cx,cy){
+  const g=ctx.createLinearGradient(0,0,W*.6,H*1.2);g.addColorStop(0,cols[0]);g.addColorStop(.55,cols[1]);g.addColorStop(1,cols[2]);
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  ctx.save();ctx.translate(cx,cy);ctx.fillStyle="rgba(255,255,255,.42)";
+  for(let i=0;i<36;i+=2){ctx.beginPath();ctx.moveTo(0,0);ctx.arc(0,0,1800,i*Math.PI/18,(i+1)*Math.PI/18);ctx.closePath();ctx.fill()}
+  ctx.restore();
+}
+// 1文字ずつ5要素の色にした、白フチのタイトル（右端のx座標を返す）
+function popTitle(ctx,text,x,y,size){
+  const cols=["#1E7FE0","#8B47D6","#22A45A","#F2A20C","#EE4D5F"];
+  ctx.font="400 "+size+"px "+F.p;ctx.textAlign="left";ctx.lineJoin="round";let xx=x;
+  [...text].forEach((ch,i)=>{ctx.lineWidth=size*.22;ctx.strokeStyle="rgba(29,35,64,.16)";ctx.strokeText(ch,xx,y+4);ctx.strokeStyle="#fff";ctx.strokeText(ch,xx,y);ctx.fillStyle=cols[i%5];ctx.fillText(ch,xx,y);xx+=ctx.measureText(ch).width});
+  return xx;
+}
+// 紺色の小さな札（右端のx座標を返す）
+function popPill(ctx,text,x,cy,size){
+  ctx.font="800 "+size+"px "+F.r;ctx.textBaseline="middle";ctx.textAlign="center";const w=ctx.measureText(text).width+size*1.4,h=size*1.8;
+  rr(ctx,x,cy-h/2,w,h,h/2);ctx.fillStyle="#1D2340";ctx.fill();ctx.fillStyle="#fff";ctx.fillText(text,x+w/2,cy+1);
+  return x+w;
+}
+// 白フチの大きな数字
+function popNum(ctx,text,x,y,size,col){
+  ctx.font="400 "+size+"px "+F.d;ctx.textAlign="left";ctx.textBaseline="alphabetic";ctx.lineJoin="round";
+  ctx.lineWidth=size*.12;ctx.strokeStyle="rgba(29,35,64,.18)";ctx.strokeText(text,x,y+6);ctx.strokeStyle="#fff";ctx.strokeText(text,x,y);ctx.fillStyle=col||"#1D2340";ctx.fillText(text,x,y);
+  return x+ctx.measureText(text).width;
+}
+// 色付きの数字タイル（正解数・正答率など）
+function popTiles(ctx,items,x,y){
+  items.forEach((v,i)=>{const bx=x+i*196,sh=["#187A42","#1561AD","#C25500"][i],col=["#22A45A","#1E7FE0","#FF7A1A"][i];
+    rr(ctx,bx,y+6,180,104,20);ctx.fillStyle=sh;ctx.fill();rr(ctx,bx,y,180,104,20);ctx.fillStyle=col;ctx.fill();
+    ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillStyle="#fff";ctx.font="400 36px "+F.d;fit(ctx,v[0],"400",F.d,36,164);ctx.fillText(v[0],bx+90,y+42);
+    ctx.fillStyle="rgba(255,255,255,.92)";ctx.font="800 20px "+F.r;ctx.fillText(v[1],bx+90,y+80)});
+}
 function drawShare(bot,botM){
   const c=document.createElement("canvas");c.width=1200;c.height=675;const ctx=c.getContext("2d");
-  ctx.fillStyle="#F3F5FA";ctx.fillRect(0,0,1200,675);
-  const band=ctx.createLinearGradient(0,0,1200,0);band.addColorStop(0,"#1E7FE0");band.addColorStop(1,"#8B47D6");
-  ctx.fillStyle=band;ctx.fillRect(0,0,1200,14);
-  ctx.textBaseline="alphabetic";ctx.textAlign="left";
-  ctx.fillStyle="#6B7290";ctx.font="800 28px "+F.r;ctx.fillText("簿記ミニゲーム｜"+M.title,64,82);
-  ctx.fillStyle="#1D2340";const st=String(score);fit(ctx,st,"400",F.d,150,520);ctx.fillText(st,58,238);
-  const sw=ctx.measureText(st).width;ctx.font="800 40px "+F.r;ctx.fillText("点",72+sw,234);
+  popBg(ctx,1200,675,["#FFF3C4","#FFD9C2","#FFC7DA"],698,230);
+  ctx.textBaseline="alphabetic";
+  const tx=popTitle(ctx,"簿記ミニゲーム",62,92,48);
+  popPill(ctx,M.title,tx+16,76,22);
+  const sx=popNum(ctx,String(score),56,244,140);
+  ctx.font="800 40px "+F.r;ctx.fillStyle="#1D2340";ctx.textAlign="left";ctx.fillText("点",sx+12,238);
   ctx.textBaseline="middle";
   const t=titleFor(score)[1],lbl="称号："+t;ctx.font="400 32px "+F.p;const tw=ctx.measureText(lbl).width+56;
   rr(ctx,64,278,tw,60,30);ctx.fillStyle="#5A2E99";ctx.fill();
   const tg=ctx.createLinearGradient(64,0,64+tw,0);tg.addColorStop(0,"#8B47D6");tg.addColorStop(1,"#1E7FE0");
-  rr(ctx,64,272,tw,60,30);ctx.fillStyle=tg;ctx.fill();ctx.fillStyle="#fff";ctx.fillText(lbl,92,303);
+  rr(ctx,64,272,tw,60,30);ctx.fillStyle=tg;ctx.fill();ctx.fillStyle="#fff";ctx.textAlign="left";ctx.fillText(lbl,92,303);
   const rate=total?Math.round(correct/total*100):0;
-  [[rate+"%","正答率"],[String(maxCombo),"最大コンボ"],[feverCount+"回","フィーバー"]].forEach((v,i)=>{
-    const bx=64+i*196,by=364;rr(ctx,bx,by,180,104,20);ctx.fillStyle="#fff";ctx.fill();ctx.lineWidth=3;ctx.strokeStyle="#DFE3EE";ctx.stroke();
-    ctx.textAlign="center";ctx.fillStyle="#1D2340";ctx.font="400 38px "+F.d;ctx.fillText(v[0],bx+90,by+42);
-    ctx.fillStyle="#6B7290";ctx.font="800 20px "+F.r;ctx.fillText(v[1],bx+90,by+80)});
+  popTiles(ctx,[[rate+"%","正答率"],[String(maxCombo),"最大コンボ"],[feverCount+"回","フィーバー"]],64,364);
   ctx.textAlign="left";ctx.textBaseline="alphabetic";ctx.fillStyle="#1D2340";ctx.font="800 32px "+F.r;
   ctx.fillText("経理・簿記の人なら60秒で何点取れる？",64,548);
   ctx.fillStyle="#1E7FE0";ctx.font="800 24px "+F.r;ctx.fillText("#簿記ミニゲーム",64,594);
-  ctx.textAlign="center";ctx.fillStyle="#6B7290";ctx.font="800 20px "+F.r;ctx.fillText("最高コンボの瞬間",960,56);
+  ctx.textAlign="center";ctx.font="800 20px "+F.r;const ml="最高コンボの瞬間",mw=ctx.measureText(ml).width+28;
+  rr(ctx,960-mw/2,36,mw,34,17);ctx.fillStyle="#fff";ctx.fill();ctx.fillStyle="#1D2340";ctx.textBaseline="middle";ctx.fillText(ml,960,54);
   if(bot){
     // 吹き出し（右端は「最高コンボの瞬間」に重ならないよう 790 まで）
     const ln=partner==="kacho"?kachoReview(lastIsNew)[1]:kassyLine();ctx.textAlign="center";ctx.textBaseline="middle";ctx.font="400 20px "+F.p;
@@ -1452,8 +1934,54 @@ function drawShare(bot,botM){
     drawBot(ctx,bot,628,150,140,154);
     ctx.textAlign="center";ctx.textBaseline="middle";ctx.font="400 22px "+F.p;const nw=ctx.measureText(partnerName()).width+28;
     rr(ctx,698-nw/2,312,nw,36,18);ctx.fillStyle="#1D2340";ctx.fill();ctx.fillStyle="#fff";ctx.fillText(partnerName(),698,331); }
-  drawMoment(ctx,800,72,320,586,snap,mode,botM);
+  drawMoment(ctx,800,78,320,580,snap,mode,botM);
   return c;
+}
+// ---- 1. 仕訳バトルのシェア用画像 ----
+async function renderVsImage(){
+  $("shareImg").removeAttribute("src"); shareCanvas=null;
+  if(!vs||!vs.res) return;
+  const o=vs.opp, win=vs.res==="win", ln=OPP_LINES[vs.key][vs.res];
+  await loadImgFonts("簿記ミニゲーム仕訳バトル勝利敗北VSあなたの残りHP正解正答率最大コンボ問Lv.（）"+o.name+ln[1]+"仕訳でキャラとHPを削り合え！#簿記ミニゲーム");
+  const im=await new Promise(ok=>{const i=new Image();i.onload=()=>ok(i);i.onerror=()=>ok(null);i.src=oppImg(o,ln[0]);});
+  const c=document.createElement("canvas");c.width=1200;c.height=675;const ctx=c.getContext("2d");
+  popBg(ctx,1200,675,win?["#FFF3C4","#FFD9C2","#FFC7DA"]:["#E3ECFF","#D9DEF3","#E8DFF6"],930,330);
+  ctx.textBaseline="alphabetic";
+  const tx=popTitle(ctx,"簿記ミニゲーム",62,92,48);
+  popPill(ctx,"仕訳バトル",tx+16,76,22);
+  ctx.textAlign="left";ctx.textBaseline="alphabetic";ctx.fillStyle="#1D2340";ctx.font="800 32px "+F.r;
+  fit(ctx,"VS "+o.name+"（Lv."+o.lv+"）","800",F.r,32,680);ctx.fillText("VS "+o.name+"（Lv."+o.lv+"）",64,160);
+  // 勝敗のハンコ
+  const sc=win?"#E5404F":"#4A5580";
+  ctx.save();ctx.translate(190,282);ctx.rotate(-.16);
+  ctx.beginPath();ctx.arc(0,0,94,0,Math.PI*2);ctx.fillStyle="rgba(255,255,255,.88)";ctx.fill();
+  ctx.lineWidth=9;ctx.strokeStyle=sc;ctx.stroke();ctx.beginPath();ctx.arc(0,0,79,0,Math.PI*2);ctx.lineWidth=3;ctx.stroke();
+  ctx.fillStyle=sc;ctx.textAlign="center";ctx.textBaseline="middle";ctx.font="400 50px "+F.p;ctx.fillText(win?"勝利！":"敗北…",0,4);
+  ctx.restore();
+  // 残りHP
+  ctx.textAlign="left";ctx.textBaseline="alphabetic";ctx.fillStyle="#1D2340";ctx.font="800 24px "+F.r;ctx.fillText("あなたの残りHP",340,232);
+  const hx=popNum(ctx,String(vs.hp),336,318,92,vs.hp<=30?"#E5404F":"#1D2340");
+  ctx.font="400 34px "+F.d;ctx.fillStyle="#6B7290";ctx.fillText("/"+VS_HP,hx+8,316);
+  rr(ctx,340,336,400,22,11);ctx.fillStyle="rgba(29,35,64,.14)";ctx.fill();
+  if(vs.hp>0){rr(ctx,340,336,Math.max(22,400*vs.hp/VS_HP),22,11);const hg=ctx.createLinearGradient(340,0,740,0);if(vs.hp<=30){hg.addColorStop(0,"#E5404F");hg.addColorStop(1,"#FF7A8A")}else{hg.addColorStop(0,"#22A45A");hg.addColorStop(1,"#5ED38B")}ctx.fillStyle=hg;ctx.fill();}
+  const rate=total?Math.round(correct/total*100):0;
+  popTiles(ctx,[[correct+"/"+total,"正解"],[rate+"%","正答率"],[String(maxCombo),"最大コンボ"]],64,392);
+  ctx.textAlign="left";ctx.textBaseline="alphabetic";ctx.fillStyle="#1D2340";ctx.font="800 32px "+F.r;
+  ctx.fillText("仕訳でキャラとHPを削り合え！",64,572);
+  ctx.fillStyle="#1E7FE0";ctx.font="800 24px "+F.r;ctx.fillText("#簿記ミニゲーム",64,618);
+  // 相手のキャラと、ひと言
+  if(im){
+    if(o.kind==="kacho"){ ctx.save();ctx.beginPath();ctx.arc(960,350,138,0,Math.PI*2);ctx.fillStyle="#fff";ctx.fill();ctx.beginPath();ctx.arc(960,350,128,0,Math.PI*2);ctx.clip();ctx.drawImage(im,832,222,256,256);ctx.restore(); }
+    else ctx.drawImage(im,810,200,300,300);
+  }
+  ctx.textAlign="center";ctx.textBaseline="middle";ctx.font="400 26px "+F.p;const nw=ctx.measureText(o.name).width+40;
+  rr(ctx,960-nw/2,512,nw,48,24);ctx.fillStyle="#1D2340";ctx.fill();ctx.fillStyle="#fff";ctx.fillText(o.name,960,537);
+  ctx.font="400 22px "+F.p;let bw=Math.min(380,ctx.measureText(ln[1]).width+40);fit(ctx,ln[1],"400",F.p,22,340);bw=Math.min(380,ctx.measureText(ln[1]).width+40);
+  rr(ctx,960-bw/2,96,bw,56,28);ctx.fillStyle="#fff";ctx.fill();ctx.lineWidth=3;ctx.strokeStyle="#1D2340";ctx.stroke();
+  ctx.beginPath();ctx.moveTo(948,150);ctx.lineTo(960,168);ctx.lineTo(972,150);ctx.closePath();ctx.fillStyle="#fff";ctx.fill();
+  ctx.beginPath();ctx.moveTo(948,151.5);ctx.lineTo(960,168);ctx.lineTo(972,151.5);ctx.stroke();
+  ctx.fillStyle="#1D2340";ctx.fillText(ln[1],960,125);
+  shareCanvas=c; $("shareImg").src=c.toDataURL("image/png");
 }
 
 async function renderImages(){
@@ -1474,6 +2002,15 @@ function track(name){ try{ if(window.goatcounter&&window.goatcounter.count) wind
 
 // ===== スコア送信（Google スプレッドシートへ） =====
 function playerId(){let id=store.get("pid",null);if(!id){id=Date.now().toString(36)+Math.random().toString(36).slice(2,10);store.set("pid",id)}return id}
+// 仕訳バトルの結果（相手・勝敗・残りHP・論点別など）。タブ「battles」に記録される
+function sendBattle(){
+  if(!SCORE_ENDPOINT||!vs||!vs.res) return;
+  const o=vs.opp;
+  const body={type:"battle",pid:playerId(),name:(store.get("nick","")||"").slice(0,12),opp:vs.key,oppName:o.name,lv:o.lv,res:vs.res,hp:vs.hp,ohp:vs.ohp,
+    correct,total,maxCombo,partner,tags:Object.entries(vs.tags).map(([t,v])=>t+" "+v.c+"/"+v.n).join("、")};
+  if(IS_LOCAL){console.log("[テスト環境] バトル結果の送信をスキップ",body);return}
+  try{fetch(SCORE_ENDPOINT,{method:"POST",mode:"no-cors",keepalive:true,headers:{"Content-Type":"text/plain"},body:JSON.stringify(body)}).catch(()=>{})}catch(e){}
+}
 function sendScore(){
   if(!SCORE_ENDPOINT) return;
   const body={pid:playerId(),name:(store.get("nick","")||"").slice(0,12),mode,score,title:titleFor(score)[1],correct,total,maxCombo,fever:feverCount,partner};
@@ -1536,6 +2073,8 @@ function kassyLine(){
 }
 // Xの上限（280。日本語・絵文字は2と数える）に収まる長さ。#簿記ミニゲーム でシェアを探せる
 function shareText(){
+  if(vs&&vs.res){ const o=vs.opp;
+    return "簿記ミニゲームの仕訳バトルで「"+o.name+"（Lv."+o.lv+"）」と対戦！\n"+(vs.res==="win"?"🎉勝利！残りHP "+vs.hp:"😇敗北…（相手の残りHP "+vs.ohp+"）")+"\n正解 "+correct+"/"+total+"問・最大"+maxCombo+"コンボ\n\n"+o.name+"「"+OPP_LINES[vs.key][vs.res][1]+"」\n\n#簿記ミニゲーム #簿記 #簿記3級"; }
   const rate=total?Math.round(correct/total*100):0;
   return "簿記ミニゲーム「"+M.title+"」\n"+score+"点・称号「"+titleFor(score)[1]+"」\n正答率"+rate+"%（"+correct+"/"+total+"問）\n🔥最大"+maxCombo+"コンボ"+(feverCount?"・🎉フィーバー"+feverCount+"回":"")+"\n"+(partner==="kacho"?"👓経理課長「"+kachoReview(lastIsNew)[1]+"」":"🤖かっしー「"+kassyLine()+"」")+"\n\n経理・簿記の人なら60秒で何点取れる？\n#簿記ミニゲーム #簿記 #簿記3級";
 }
@@ -1547,7 +2086,9 @@ function countUp(el,to){
 }
 
 function finish(){
-  ended=true;locked=true;hideSheet();bumpStreak();endFever();hush();bgmStop();SFX.end();
+  ended=true;locked=true;hideSheet();bumpStreak();endFever();hush();bgmStop();vsStop();SFX.end();
+  $("result").classList.toggle("vs",!!vs);
+  if(vs){ finishVs(); return; }
   const k="best_"+mode, best=store.get(k,0), isNew=score>best&&score>0;
   if(isNew) store.set(k,score);
   lastIsNew=isNew; track("finish-"+mode); if(partner==="kacho") track("finish-kacho");
@@ -1575,17 +2116,59 @@ function finish(){
   renderImages();
   $("shareX").href="https://twitter.com/intent/tweet?text="+encodeURIComponent(shareText())+"&url="+encodeURIComponent(SHARE_URL);
   $("toast").textContent="";
-  const box=$("misses");
-  box.innerHTML = misses.length
-    ? "<h2>間違えた問題（"+misses.length+"）</h2>"+misses.map(m=>"<div class='miss'><b>"+m.plain+"</b><span class='tag' style='background:"+TAGCOL[m.ans]+"'>"+M.name(m.ans)+"</span><br>"+m.ex+"</div>").join("")
-    : "<h2>間違えた問題</h2><div class='empty'>"+(total?"全問正解です。":"まだ1問も答えていません。")+"</div>";
-  show("result");
+  renderMisses();
+  show("result"); fbReset(); fbMaybeAuto();
   $("result").querySelector(".result-scroll").scrollTop=0;
   countUp($("rscore"),score);
   // 点数が出そろうころに紙吹雪（ベスト更新なら多め）
   if(total>0) setTimeout(()=>confetti(isNew?80:40,$("rscore")),850);
 }
 
+// 結果画面の「間違えた問題」
+function renderMisses(){
+  const box=$("misses");
+  box.innerHTML = misses.length
+    ? "<h2>間違えた問題（"+misses.length+"）</h2>"+misses.map(m=>"<div class='miss'><b>"+m.plain+"</b><span class='tag' style='background:"+TAGCOL[m.ans]+"'>"+M.name(m.ans)+"</span><br>"+m.ex+"</div>").join("")
+    : "<h2>間違えた問題</h2><div class='empty'>"+(total?"全問正解です。":"まだ1問も答えていません。")+"</div>";
+}
+// 対戦の結果画面
+function finishVs(){
+  clearInterval(timer);
+  const o=vs.opp, res=vs.ohp<=0?"win":vs.hp<=0?"lose":(vs.ohp<vs.hp?"win":"lose");
+  vs.res=res;
+  const r=vsRecord(vs.key); r[res==="win"?"w":"l"]++; store.set("vsrec_"+vs.key,r);
+  track("finish-vs-"+vs.key+"-"+res);
+  if(total>0) sendBattle();
+  // 遊んだ回数（経理課長の解放）は対戦も数える
+  let unlocked=false;
+  if(total>0){ plays++; store.set("plays",plays); if(plays===KACHO_NEED){ unlocked=true; track("unlock-kacho"); } renderPartner(); }
+  $("unlock").classList.toggle("on",unlocked);
+  $("rname").textContent="VS "+o.name+"（Lv."+o.lv+"）　あなたの残りHP";
+  $("rscore").textContent=vs.hp;
+  $("newbest").classList.remove("on");
+  $("rtitle").textContent=res==="win"?"勝利！🎉":"敗北…";
+  $("rnext").textContent="対戦成績 "+r.w+"勝"+r.l+"敗";
+  const ln=OPP_LINES[vs.key][res];
+  $("kachoImg").src=oppImg(o,ln[0]);
+  $("kachoImg").classList.toggle("robot",o.kind!=="kacho");
+  $("kachoTitle").textContent=o.name+"のひと言";
+  // 次の相手が解放されたら知らせる
+  const nk=OPP_KEYS[OPP_KEYS.indexOf(vs.key)+1]; if(res==="win"&&nk&&r.w===1&&OPP_KEYS.indexOf(nk)>=1) $("rnext").textContent+="　🔓 "+OPP[nk].name+"に挑戦できるようになりました！"; $("kachoTxt").textContent=ln[1];
+  $("rcorrect").textContent=correct+"/"+total;
+  $("rrate").textContent=(total?Math.round(correct/total*100):0)+"%";
+  $("rmax").textContent=maxCombo;
+  // 論点別の正解率（低い順）
+  const tg=Object.entries(vs.tags).sort((a,b)=>a[1].c/a[1].n-b[1].c/b[1].n);
+  $("tagstats").innerHTML="<h2>論点別の正解率</h2>"+(tg.length?tg.map(([t,v])=>{ const pc=Math.round(v.c/v.n*100); return "<div class='tagrow'><span class='tn'>"+t+"</span><i><b class='"+(pc<70?"weak":"")+"' style='width:"+pc+"%'></b></i><span class='tv'>"+v.c+"/"+v.n+"問</span></div>"; }).join(""):"<div class='empty'>まだ1問も答えていません。</div>");
+  $("shareX").href="https://twitter.com/intent/tweet?text="+encodeURIComponent(shareText())+"&url="+encodeURIComponent(SHARE_URL);
+  $("toast").textContent="";
+  renderMisses();
+  renderVsImage();
+  say(res==="win"?"saikoueki":"otsukare");
+  show("result"); fbReset(); fbMaybeAuto();
+  $("result").querySelector(".result-scroll").scrollTop=0;
+  if(res==="win") setTimeout(()=>confetti(80,$("rscore")),300);
+}
 async function copyResult(){
   const text=shareText()+"\n"+SHARE_URL;
   let ok=false;
@@ -1596,6 +2179,8 @@ async function copyResult(){
 }
 
 document.querySelectorAll(".ans").forEach(b=>b.addEventListener("click",()=>answer(b.dataset.c)));
+document.querySelectorAll("#board-jr .jrk").forEach(b=>b.addEventListener("click",()=>jrTap(b)));
+// 仕訳ジャッジは正解のボタンが毎回変わるので、押したボタンを answer に渡す前に探せるようにしておく
 // ステップ2（左右ジャッジ）は準備中。再開するときは LR_OPEN を true にする
 const LR_OPEN=true;
 if(!LR_OPEN){
@@ -1603,16 +2188,54 @@ if(!LR_OPEN){
   t.querySelector(".best").outerHTML='<span class="soonTag">準備中</span>';
   document.querySelector(".tabs").style.display="none"; rankMode="sort";
 }
-document.querySelectorAll(".tile").forEach(b=>b.addEventListener("click",()=>{ if(!b.disabled) start(b.dataset.mode); }));
-$("again").addEventListener("click",()=>start(mode));
+document.querySelectorAll(".tile").forEach(b=>b.addEventListener("click",()=>{ if(!b.disabled&&b.dataset.mode){ vs=null; start(b.dataset.mode); } }));
+$("again").addEventListener("click",()=>{ if(vs) startVs(vs.key); else start(mode); });
+if($("vsTile")){ $("vsTile").addEventListener("click",vsOpen); $("vsCancel").addEventListener("click",()=>{ $("vspick").hidden=true; }); }
 $("sheet").addEventListener("click",skipMiss);
 $("useKacho").addEventListener("click",()=>{ setPartner("kacho"); $("useKacho").textContent="相棒になりました"; $("useKacho").disabled=true; });
 $("home").addEventListener("click",()=>{refreshMenu();show("menu")});
-$("quit").addEventListener("click",()=>{if(!ended&&total>0) track("quit-"+mode);clearCountdown();clearInterval(timer);ended=true;hideSheet();endFever();hush();bgmStop();refreshMenu();show("menu")});
+$("quit").addEventListener("click",()=>{if(!ended&&total>0) track("quit-"+(vs?"vs":mode));clearCountdown();clearInterval(timer);ended=true;vsStop();hideSheet();endFever();hush();bgmStop();refreshMenu();show("menu")});
 $("copy").addEventListener("click",()=>{track("share-copy");copyResult()});
 $("saveImg").addEventListener("click",()=>{track("share-save");saveImage()});
 $("shareX").addEventListener("click",()=>track("share-x"));
-$("feedback").addEventListener("click",()=>track("feedback-x"));
+// ===== 感想を送る =====
+const fb={fun:0,diff:0};
+function fbOpen(auto){
+  fb.fun=0; fb.diff=0; $("fbText").value=""; $("fbMsg").textContent=""; $("fbNick").value=store.get("nick","");
+  document.querySelectorAll(".fbopts button").forEach(b=>b.setAttribute("aria-pressed","false"));
+  fbCheck(); $("fbpick").hidden=false; track(auto?"feedback-auto":"feedback-open");
+}
+function fbCheck(){ $("fbSend").disabled=!(fb.fun&&fb.diff); }
+function fbContext(){
+  if(vs&&vs.res) return {game:"仕訳バトル",result:vs.opp.name+"（Lv."+vs.opp.lv+"）に"+(vs.res==="win"?"勝ち":"負け")+"・残りHP "+vs.hp};
+  return {game:M.title,result:score+"点・正答率"+(total?Math.round(correct/total*100):0)+"%"};
+}
+function fbSend(){
+  if(!(fb.fun&&fb.diff)) return;
+  const ctx=fbContext();
+  // 入れたニックネームは、トップ画面のニックネームにも反映する
+  const nk=$("fbNick").value.trim().slice(0,12); store.set("nick",nk); $("nick").value=nk;
+  const body={type:"feedback",pid:playerId(),name:nk,fun:fb.fun,diff:fb.diff,text:$("fbText").value.trim().slice(0,300),
+    game:ctx.game,result:ctx.result,partner,plays};
+  store.set("fb_done",true); track("feedback-send");
+  if(IS_LOCAL) console.log("[テスト環境] 感想の送信をスキップ",body);
+  else if(SCORE_ENDPOINT){ try{fetch(SCORE_ENDPOINT,{method:"POST",mode:"no-cors",keepalive:true,headers:{"Content-Type":"text/plain"},body:JSON.stringify(body)}).catch(()=>{})}catch(e){} }
+  $("fbpick").hidden=true;
+  $("fbOpen").innerHTML="✅ 感想ありがとうございます！"; $("fbOpen").classList.add("done"); $("fbOpen").disabled=true;
+}
+function fbReset(){ $("fbOpen").innerHTML="📝 感想を送る<small>30秒で終わります</small>"; $("fbOpen").classList.remove("done"); $("fbOpen").disabled=false; }
+// 初めの3回を遊び終えたとき、まだ送っていなければ1回だけ自動で開く
+function fbMaybeAuto(){
+  if(!SCORE_ENDPOINT||plays!==3||store.get("fb_done",false)||store.get("fb_auto",false)) return;
+  store.set("fb_auto",true);
+  setTimeout(()=>{ if(document.body.dataset.screen==="result"&&$("fbpick").hidden) fbOpen(true); },2200);
+}
+$("fbOpen").addEventListener("click",()=>fbOpen(false));
+$("fbCancel").addEventListener("click",()=>{ $("fbpick").hidden=true; });
+$("fbSend").addEventListener("click",fbSend);
+[["fbFun","fun"],["fbDiff","diff"]].forEach(([id,k])=>document.querySelectorAll("#"+id+" button").forEach(b=>b.addEventListener("click",()=>{
+  fb[k]=+b.dataset.v; document.querySelectorAll("#"+id+" button").forEach(x=>x.setAttribute("aria-pressed",x===b)); fbCheck();
+})));
 $("nick").value=store.get("nick","");
 $("nick").addEventListener("input",()=>store.set("nick",$("nick").value.trim().slice(0,12)));
 document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>{rankMode=b.dataset.rank;renderRank()}));
